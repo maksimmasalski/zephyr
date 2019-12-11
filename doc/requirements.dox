@@ -5,159 +5,1319 @@
 @section Requirements
 
 
-@section Semaphores
+@section Architecture Interface
 
-@subsection ZEP008 ZEP008: Semaphores may be taken by a thread
-A semaphore may be taken by a thread. Taking the semaphore shall decrement its
-count, unless the semaphore count is zero
-
-
-@subsection ZEP009 ZEP009: Defining number of semaphores
-An application shall be able to define any number of semaphores
+@subsection ZEP003 ZEP003: Return a pointer to current CPU record
+The kernel architecture layer shall provide a mechanism to return a pointer to the current kernel CPU record of the running CPU
 
 
-@subsection ZEP010 ZEP010: Thread waiting on a semaphore
-Any number of threads may wait on a semaphore simultaneously.
+@subsection ZEP004 ZEP004: Interprocessor interrupt to all other CPUs
+The kernel architecture layer shall provide a mechanism to issue an interprocessor interrupt to all other CPUs in the system that calls the scheduler IPI handler
 
 
-@subsection ZEP011 ZEP011: Semaphore thread priority
-When the semaphore is given, it is taken by the highest priority thread that
-has waited longest.
+@subsection ZEP005 ZEP005: Start non-boot CPUs on SMP
+The kernel architecture layer shall provide a means to start non-boot CPUs on SMP systems
 
 
-@subsection ZEP012 ZEP012: Zero count semaphore
-When a semaphore count is zero, a thread will wait for it to be incremented by
-another thread
+@subsection ZEP007 ZEP007: Attaching a specific C function to named interrupt
+The kernel architecture layer shall provide the ability to attach a specific C function to a specific named interrupt at run time
 
 
-@subsection ZEP013 ZEP013: Defining and initializing semaphore at compile time
-A semaphore can be defined and initialized at compile time with an
-application-specified count and a maximum permitted semaphore count
-
-@subsection ZEP913 ZEP913: Defining and initializing semaphore at runtime time
-A semaphore can be defined and initialized at run time with an
-application-specified count and a maximum permitted semaphore count
+@subsection ZEP008 ZEP008: Mechanism to restore local interrupt state
+The kernel architecture layer shall provide a mechanism to restore the local interrupt state saved prior to a mask operation.
 
 
-@subsection ZEP014 ZEP014: Accepting timeout arguments
-The kernel shall accept a timeout argument with a take operation that specifies
-the maximum amount of time the thread will wait
+@subsection ZEP009 ZEP009: Mechanism to determine code execution in interrupt handler
+The kernel architecture layer shall provide a mechanism to determine whether the current code is executing in an interrupt handler
 
 
-@subsection ZEP114 ZEP114: Getting Semaphore count
-
-An application shall be able to get the numnber of remaining tokens from a semaphore.
-
-@subsection ZEP015 ZEP015: Semaphore given by thread or ISR
-A semaphore may be given by a thread or an ISR.
+@subsection ZEP010 ZEP010: Mechanism to disable and enable numeric interrupts
+The kernel architecture layer shall provide a mechanism to selectively disable and enable specific numeric interrupts.
 
 
-@subsection ZEP016 ZEP016: Semaphore properties
-A semaphore shall have the following properties: a count that indicated the
-number of times the semaphore can be taken and a limit that indicates the max.
-value the semaphore count can reach.
+@subsection ZEP011 ZEP011: Mechanism to mask all local CPU interrupts
+The kernel architecture layer shall provide a mechanism to simultenously mask all local CPU interrupts and return the previous mask state for restoration
 
 
-@subsection ZEP116 ZEP116: Semaphore reset
-An application shall be able to reset the semaphore count. After reset, the
-count shall be zero.
-
-@section Threads
-
-@subsection ZEP018 ZEP018: Statically initializing thread stacks
-The kernel shall supply a mechanism for statically initializing thread stacks
-in memory
+@subsection ZEP012 ZEP012: Raise an interrupt from thread code
+The kernel architecture layer shall provide a means to raise an interrupt from thread code that will run a user-provided C function under the interrupt context 
 
 
-@subsection ZEP019 ZEP019: Thread ID
-Each thread shall have a thread ID used to reference the thread in question
+@subsection ZEP013 ZEP013: Attach a C function to interrupt at build
+The kernel architecture layer shall provide the ability to attach a specific C function to a specific named interrupt at build time
 
 
-@subsection ZEP020 ZEP020: Floating point context on thread context switch
-The kernel shall preserve floating point context on thread context switch
+@subsection ZEP015 ZEP015: Thread context handle restoration
+Thread context handles derived from context switches must be able to be restored upon interrupt exit
 
 
-@subsection ZEP021 ZEP021: Raising fatal errors
-The kernel shall raise a fatal system error if the idle thread aborts
+@subsection ZEP016 ZEP016: Interrupt entry to be restored by context switch
+Thread context handles derived from interrupt entry must be able to be restored by context switch  
 
 
-@subsection ZEP022 ZEP022: Human-readable name thread association
-The kernel shall supply a mechanism for associating human-readable names with
-threads
+@subsection ZEP018 ZEP018: Providing idle function to be run 
+The kernel architecture layer shall provide a idle function to be run when the system has no work for the current CPU
 
 
-@subsection ZEP023 ZEP023: Floating point register thread poilicy
-The kernel should not incur floating point register save overhead for threads
-not using floating point
+@subsection ZEP019 ZEP019: 32 bit increasing cycle counter
+The kernel architecture layer shall provide a 32 bit monotonically increasing cycle counter
 
 
-@subsection ZEP024 ZEP024: Thread synchronous end
-A thread may synchronously end its execution by returning from its entry point
-function.
+@subsection ZEP020 ZEP020: Initialization hook after C startup
+The kernel architecture layer shall provide an initialization hook that runs after C startup
 
 
-@subsection ZEP025 ZEP025: Thread abortion
-A thread can be aborted by another thread.
+@subsection ZEP022 ZEP022: Single handler for hardware exceptions
+The kernel architecture layer shall provide a single handler for hardware exceptions
 
 
-@subsection ZEP026 ZEP026: Custom data per thread
-The kernel shall support providing custom data per thread. The data will be
-thread specific and can be used by an application for any purpose.
-
-
-@subsection ZEP027 ZEP027: Asynchronous thread end
-A thread may asynchronously end its execution by aborting.
-
-
-@subsection ZEP028 ZEP028: Application thread definition
-An application shall be able to define any number of threads
-
-
-@subsection ZEP029 ZEP029: Configuring a thread at compile time
-The kernel shall be able to configure a thread at compile time
-
-
-@subsection ZEP030 ZEP030: Thread definition options
-A thread shall be defined with options to either start execution immediately or
-with a delay by specifying a timeout value
-
-
-@subsection ZEP031 ZEP031: Preventing accidental access between threads
-The kernel shall prevent accidental access from one thread to the floating
-point registers of another
-
-
-@subsection ZEP032 ZEP032: Cancelling delayed start before thread execution
-The kernel shall allow delayed start to be cancelled before the thread starts
-execution
+@subsection ZEP023 ZEP023: Create a synchronous trap to a hardware exception handler
+The kernel architecture layer shall provide a mechanism to create a synchonous trap to a hardware exception handler
 
 
 
-@section Mutexes
+@section Workqueues
 
-@subsection ZEP002 ZEP002: Recursive mutexes
-The kernel shall support recursive mutexes.  A lock of a mutex already locked
-will succeed, and waiters will be unblocked only when the number of locks
-reaches zero.
+@subsection ZEP026 ZEP026: Work items
+A work item shall be supplied as a user-defined callback function
 
 
-@subsection ZEP003 ZEP003: Mutex priority inheritance
-The thread that has locked a mutex shall be eligible for priority inheritance.
-This means the kernel will temporarily elevate the thread's priority if a
-higher priority thread begins waiting on the mutex.
+@subsection ZEP027 ZEP027: Scheduling a work item
+The kernel shall support scheduling a work item that is to be processed only after specified period of time, rather than immediately.
 
 
-@subsection ZEP004 ZEP004: Defining and initializing mutexes
+@subsection ZEP028 ZEP028: Resubmitting a work item
+The kernel shall support resubmitting a work item during execution of its callback 
+
+
+@subsection ZEP029 ZEP029: Handler function of work items
+The handler function of a work item shall be able to utilize any kernel API available to threads.
+
+
+@subsection ZEP030 ZEP030: Defining workqueues
+An application shall be able to define any number of workqueues
+
+
+@subsection ZEP031 ZEP031: Creating workqueues
+A workqueue may be created with a specific thread object supplied by the user upon initialization
+
+
+
+@section Atomic Operations
+
+@subsection ZEP034 ZEP034: Atomic Clear Functions
+The system shall provide an atomic clear function.
+
+
+@subsection ZEP035 ZEP035: Atomic Bitwise exclusive or function
+The system shall provide an atomic bitwise exclusive or function.
+
+
+@subsection ZEP036 ZEP036: Atomic manipulation
+The kernel shall support the atomic manipulation of a single bit in an array of atomic variables.
+
+
+@subsection ZEP037 ZEP037: Atomic Clear Bit Function
+The system shall provide an atomic clear bit function.
+
+
+@subsection ZEP038 ZEP038: Atomic Set Bit Function
+The system shall provide an atomic set bit to function.
+
+
+@subsection ZEP039 ZEP039: Atomic Bitwise "or" function
+The system shall provide an atomic bitwise or function.
+
+
+@subsection ZEP040 ZEP040: Atomic compare-and-swap function
+The system shall provide an atomic compare-and-swap function
+
+
+@subsection ZEP041 ZEP041: Atomic increment function
+The system shall provide an atomic increment function.
+
+
+@subsection ZEP042 ZEP042: Atomic "set" function
+The system shall provide an atomic set function.
+
+
+@subsection ZEP043 ZEP043: Atomic set bit function
+The system shall provide an atomic set bit function.
+
+
+@subsection ZEP044 ZEP044: Atomic test and clear bit function
+The system shall provide an atomic test and clear bit function.
+
+
+@subsection ZEP045 ZEP045: Atomic bitwise "and" function
+The system shall provide an atomic bitwise and function.
+
+
+@subsection ZEP046 ZEP046: Atomic bitwise "nand" function
+The system shall provide an atomic bitwise nand function.
+
+
+@subsection ZEP047 ZEP047: Atomic decrement function
+The system shall provide an atomic decrement function.
+
+
+@subsection ZEP048 ZEP048: 32bit quantities atomic operations
+The kernel shall support atomic operations on 32bit quantities 
+
+
+@subsection ZEP049 ZEP049: Atomic subtract function
+The system shall provide an atomic subtract function.
+
+
+@subsection ZEP050 ZEP050: Atomic test and set function
+The system shall provide an atomic test and set bit function.
+
+
+@subsection ZEP051 ZEP051: Atomic add function
+The system shall provide an atomic add function.
+
+
+@subsection ZEP052 ZEP052: Atomic test bit function
+The system shall provide an atomic test bit function.
+
+
+@subsection ZEP053 ZEP053: Atomic variable definition
+Any number of atomic variables can be defined.
+
+
+
+@section C Library
+
+@subsection ZEP056 ZEP056: Linking with external C libraries
+The OS shall support linking with external and compatible C standard library implementations
+
+
+@subsection ZEP058 ZEP058: Minimal C library for POSIX
+The OS shall provide a minimal C standard library implementation covering POSIX_C_LANG_SUPPORT from the POSIX standard (https://pubs.opengroup.org/onlinepubs/9699919799/xrat/V4_subprofiles.html)
+
+
+@subsection ZEP059 ZEP059: Defined hooks not provided by C library
+The OS shall support implementation defined hooks not provided by the C library implementation (low-level filesystem access, requests to enlarge its memory heap, getting the time of day, and various types of context management like process forking and killing. )
+
+
+
+@section Data Structures
+
+@subsection ZEP062 ZEP062: Ring buffer insufficient data error
+The ring buffer shall return an error if insufficient data is available to read
+
+
+@subsection ZEP063 ZEP063: Ring buffer in user-controlled memory
+The OS shall support placing the ring buffer in any user-controlled memory
+
+
+@subsection ZEP064 ZEP064: Ring buffer error return
+The ring buffer shall return an error if no space is available for an insert operation
+
+
+@subsection ZEP065 ZEP065: Ring buffer storage
+The ring buffer shall be stored as a contiguous array of pointer-sized words
+
+
+@subsection ZEP066 ZEP066: Ring buffer data copy out of array
+The ring buffer shall copy data out of the array from the beginning of the index-wrapped in-use data.
+
+
+@subsection ZEP067 ZEP067: Ring buffer data copy into array
+Ring buffer data shall be copied into the array at the end of the (index-wrapped) in-use data
+
+
+@subsection ZEP069 ZEP069: Embeddedable rbtree node struct
+The rbtree node struct must be embeddedable in any user struct
+
+
+@subsection ZEP070 ZEP070: Rtree logarithmic time access 
+The rbtree must provide logarithmic time access to the minimum and maximum elements of the tree
+
+
+@subsection ZEP071 ZEP071: Rbtree "for each" style iteration API
+The rbtree shall provide a "for each" style iteration API
+
+
+@subsection ZEP072 ZEP072: Rbtree "less than" predicate function
+The rbtree must support any user-provided "less than" predicate function
+
+
+@subsection ZEP073 ZEP073: Rbtree insert and remove operations
+The rbtree insert and remove operations must run in logarithmic time in the size of the tree
+
+
+@subsection ZEP074 ZEP074: Rbtree in user-controlled memory
+The rbtree node struct must be placeable in in any user-controlled memory
+
+
+@subsection ZEP076 ZEP076: Embeddedable dlist struct
+The dlist node struct must be embeddedable in any user struct
+
+
+@subsection ZEP077 ZEP077: Dlist constant time access
+The dlist shall provide constant time access to the "head" and "tail" of the list
+
+
+@subsection ZEP078 ZEP078: Place-able dlist node struct
+The dlist node struct must be placeable in any user-controlled memory
+
+
+@subsection ZEP079 ZEP079: Dlist "for each" style iteration API
+The dlist shall provide a "for each" style iteration API
+
+
+@subsection ZEP080 ZEP080: Dlist insert and remove operations
+The dlist insert and remove operations must run in constant time
+
+
+
+@section Device Driver
+
+@subsection ZEP083 ZEP083: Providing control device driver initialization order
+The kernel shall provide control over device driver initalization order, using initialization level and priority for each instance.
+
+
+@subsection ZEP084 ZEP084: APIs to return the device driver instance
+The kernel shall provide APIs to return the device driver instance given an identifier associated with that instance.
+
+
+@subsection ZEP085 ZEP085: Abstraction of device drivers with common functionalities
+Abstraction of device drivers with common functionalities (e.g. I2C, SPI) shall be provided as an intermediate interface between applications and device drivers, where such interface is implemented by individual device drivers.
+
+
+@subsection ZEP086 ZEP086: APIs to enable and disable automatic idle power management
+The kernel shall provide APIs to enable and disable automatic idle power management
+
+
+@subsection ZEP087 ZEP087: Initialization priorities for device driver instances
+The kernel shall support initialisation priorities for device driver instances.
+
+
+@subsection ZEP088 ZEP088: APIs to connect interrupts to device driver instances
+The kernel shall provide APIs to connect interrupts to device driver instances.
+
+
+@subsection ZEP089 ZEP089: APIs to define and instantiate a device driver instance
+The kernel shall provide APIs for developers to define and instantiate a device driver instance, where each instance has an identifier.
+
+
+@subsection ZEP090 ZEP090: APIs for applications for getting and manipulating power states
+The kernel shall provide APIs for applications for getting the current power states and to manipulate the power states of devices.
+
+
+
+@section Memory Pool / Memory Slabs
+
+@subsection ZEP093 ZEP093: Application definition of memory pools
+An application shall be able to define any number of memory pools
+
+
+@subsection ZEP094 ZEP094: Timeout values to allocating memory
+The kernel shall support providing a timeout value to allocating memory, to wait if there are no free memory blocks for one to become available
+
+
+@subsection ZEP095 ZEP095: Dynamically allocated heap memory region
+A thread can dynamically allocate a region of heap memory
+
+
+@subsection ZEP096 ZEP096: Memory pool initialization and definition at compile time
+A memory pool can be defined and initialized at compile time
+
+
+@subsection ZEP097 ZEP097: Releasing heap memory to pool
+When the thread is finished with a region of heap memory it shall be able to release the region back to the heap memory pool
+
+
+@subsection ZEP098 ZEP098: Memory pool API
+The memory pool API must be useable from user mode managing memory within the protected space.
+
+
+@subsection ZEP099 ZEP099: Memory pool buffer alignment
+The kernel shall ensure that the memory pool buffer is aligned to native word length boundaries
+
+
+@subsection ZEP101 ZEP101: Application definition of memory slabs
+An application shall be able to define any number of memory slabs, with each slab containing an arbitrary number of fixed-sized blocks
+
+
+@subsection ZEP102 ZEP102: Memory slab buffer alignment
+The kernel shall ensure that the memory slab buffer is aligned to native word length boundaries
+
+
+@subsection ZEP103 ZEP103: Memory slab intialization
+A memory slab must be initialized before it can be used. This marks all of its blocks as unused.
+
+
+@subsection ZEP104 ZEP104: Memory slab initialization and definition at compile time
+A memory slab can be defined and initialized at compile time
+
+
+
+@section Fatal Exception Handling
+
+@subsection ZEP107 ZEP107: Fatal error default policy
+The default policy for fatal errors shall be to suspend all threads, attempt to flush output buffers, and halt the system.
+
+
+@subsection ZEP108 ZEP108: Results of a stack overflow
+A fatal error which is the result of a stack overflow will report a distinct reason code for this condition
+
+
+@subsection ZEP109 ZEP109: Fatal error kernel debugging messages
+If kernel debugging messages are enabled, the fatal error should dump the ID of the faulting thread and the type of the error
+
+
+@subsection ZEP110 ZEP110: Specific reason code for fatal errors
+A fatal error which occurs while servicing an interrupt or exception shall have a specific reason code
+
+
+@subsection ZEP111 ZEP111: Applications implementing their own policy upon fatal error
+The application must be able to override the fatal error handling function to implement their own policy upon fatal error, which gets passed the reason for the fatal error and an architecture-specific struct containing the system register state
+
+
+@subsection ZEP112 ZEP112: Processing or examination of the faulting thread's stack
+Any processing or examination of the faulting thread's stack during fatal error handling must treat the stack contents as untrusted and potentionally malicious.
+
+
+@subsection ZEP113 ZEP113: Interrupts or exception without handlers
+Any interrupt or exception that does not have a handler installed shall trigger a fatal error
+
+
+@subsection ZEP114 ZEP114: Inducing fatal error at runtime
+A fatal error may be deliberately induced at runtime, with an integer reason code
+
+
+
+@section File System
+
+@subsection ZEP117 ZEP117: Multiple File System Support
+The system shall support multiple file systems simultanously
+
+
+@subsection ZEP118 ZEP118: File system backend registering and unregistering 
+The system shall support registering and unregistering file system backends
+
+
+@subsection ZEP120 ZEP120: Interface to flush stream and close a file
+The system shall provide an interface to flush the associated stream and closes the file
+
+
+@subsection ZEP121 ZEP121: Interface to read directory entries
+The system shall provide an interface to read directory entries of a open directory
+
+
+@subsection ZEP122 ZEP122: Interface for flushing cache of an open file
+The system shall provide an interface to flush the cache of an open file
+
+
+@subsection ZEP123 ZEP123: Interface to truncate a file
+The system shall provide an interface to truncate the file to the new length
+
+
+@subsection ZEP124 ZEP124: Interface to mount a file system
+The system shall provide an interface to mount a file system
+
+
+@subsection ZEP125 ZEP125: Interface for writing items
+The system shall provide an interface to write items of data of size bytes long
+
+
+@subsection ZEP126 ZEP126: Interface to check the status of a file or directory
+The system shall provide an interface to check the status of a file or directory specified by the path
+
+
+@subsection ZEP127 ZEP127: Interface to retrieve current position
+The system shall provide an interface to retrieve the current position in the file
+
+
+@subsection ZEP128 ZEP128: Interface to close an open directory
+The system shall provide an interface to close an open directory
+
+
+@subsection ZEP129 ZEP129: Interface to delete file or directory
+The system shall provide an interface to delete the specified file or directory
+
+
+@subsection ZEP130 ZEP130: Interface to create a new directory
+The system shall provide an interface to create a new directory using specified path
+
+
+@subsection ZEP131 ZEP131: Interface to move file positions
+The system shall provide an interface to move the file position to a new location in the file
+
+
+@subsection ZEP132 ZEP132: Interface to open existing directory
+The system shall provide an interface to open an existing directory specified by the path
+
+
+@subsection ZEP133 ZEP133: Interface to return total and available space in filesystem
+The system shall provide an interface to return the total and available space in the filesystem volume
+
+
+@subsection ZEP134 ZEP134: Interface to rename file or directory
+The system shall provide an interface to rename a file or directory
+
+
+@subsection ZEP135 ZEP135: Interface to un-mount a file system
+The system shall provide an interface to unmount a file system
+
+
+@subsection ZEP136 ZEP136: Interface for reading items
+The system shall provide an interface to read items of data of size bytes long
+
+
+@subsection ZEP137 ZEP137: Interface for opening or creating a file system
+The system shall provide an interface to open an existing file or create a new file system
+
+
+
+@section Interrupts
+
+@subsection ZEP140 ZEP140: Disabling individual interrupts
+Individual interrupts may be disabled to prevent processing of their interrupt service routines
+
+
+@subsection ZEP141 ZEP141: Mask/unmask interrupt API
+The kernel shall provide an API to mask/unmask all interrupts for the purposes of software mutual exclusion
+
+
+@subsection ZEP143 ZEP143: Dedicated interrupt stack
+The kernel shall provide a dedicated interrupt stack for processing hardware interrupts
+
+
+@subsection ZEP144 ZEP144: Interrupt nesting
+The kernel should support interrupt nesting allowing an ISR to be preempted in mid-execution if a higher priority interrupt is signaled. The lower priority ISR resumes execution once the higher priority ISR has completed its processing.
+
+
+@subsection ZEP146 ZEP146: Configuring interrupts
+The user shall be able to supply a word-sized parameter when configuring interrupts, which are passed to the interrupt service routine when the interrupt happens.
+
+
+@subsection ZEP147 ZEP147: Configuring interrupts statically at build time
+The kernel shall support configuration of interrupts statically at build time.
+
+
+@subsection ZEP148 ZEP148: Configuring interrupts dynamically at runtime
+The kernel shall support configuration of interrupts dynamically at runtime.
+
+
+@subsection ZEP149 ZEP149: Supporting multiple ISRs to process interrupts
+The kernel shall support multiple ISRs utilizing the same function to process interrupts, allowing a single function to service a device that generates multiple types of interrupts or to service multiple devices (usually of the same type)
+
+
+@subsection ZEP150 ZEP150: Synchronously run code after interrupt
+The kernel shall provide a mechanism for synchronously running code after interrupt acknowledgement but before return to user threads.
+
+
+@subsection ZEP151 ZEP151: Raising a fatal error is for interrupt with no handler function 
+The kernel shall raise a fatal error if an interrupt or exception occurs that has no handler function installed
+
+
+@subsection ZEP152 ZEP152: IDT vector table
+The kernel shall support the use of IDT or a vector table is used to associate a given interrupt source with a given ISR. Only a single ISR can be associated with a specific IRQ at any given time.
+
+
+@subsection ZEP153 ZEP153: Configurable "direct" interrupts
+The user should be able to configure "direct" interrupts which bypass common interrupt handling code, scheduling decisions, and parameters in order to service the interrupt in with the lowest latency possible.
+
+
+
+@section Kernel Clocks
+
+@subsection ZEP156 ZEP156: 64bit uptime counter
+The kernel shall support a 64bit uptime counter
+
+
+@subsection ZEP157 ZEP157: Converting time units
+The kernel shall provide a way to convert the time units used by the clocks into standard time units
+
+
+@subsection ZEP158 ZEP158: Millisecond time duration
+The kernel shall allow providing time durations in milliseconds
+
+
+@subsection ZEP159 ZEP159: 32bit hardware clocks
+The kernel shall support 32bit hardware clocks
+
+
+@subsection ZEP161 ZEP161: Tickless mode
+The kernel shall support a "tickless" mode where timekeeping does not require the regular delivery of timer interrupts and interrupts reflect only registered events.
+
+
+
+@section Logging
+
+@subsection ZEP164 ZEP164: Unique core ID in logging system
+The logging system shall support each core with its unique core ID, which may be a parameter of each log and trace message.
+
+
+@subsection ZEP166 ZEP166: Logging system to switch blocking synchronous processing
+The logging system shall switch to blocking, synchronous processing in panic mode
+
+
+@subsection ZEP167 ZEP167: Logging system to support handling of transient strings
+The logging system shall support handling of transient strings, copying data when an asynchronous backend is in use
+
+
+@subsection ZEP168 ZEP168: Synchronous processing of logging messages
+Logging shall support synchronous processing of logging messages.
+
+
+@subsection ZEP169 ZEP169: Early logging
+The logging system shall provide early logging possibility. The API shall be able to handle log message attempts as well as creating new log contexts instances, before the backends are active
+
+
+@subsection ZEP171 ZEP171: Enabling applications to provide information to logging system
+The logging system shall enable applications to provide information about its severity.
+
+
+@subsection ZEP172 ZEP172: Customizable timestamping in log messages
+The logging system shall support user customizable timestamping in log messages
+
+
+@subsection ZEP173 ZEP173: Dedicated API for dumping data in logging system
+The logging system shall support dumping data using a dedicated API
+
+
+@subsection ZEP174 ZEP174: Selectable destination for logging information
+The logging system shall allow to select the destination of the provided logging information.
+
+
+@subsection ZEP175 ZEP175: Logging buffer and stack size
+Logging buffer sizes and stack size for the logging thread shall be configurable
+
+
+@subsection ZEP176 ZEP176: Grouping logging information by domain
+The logging system shall support logically group logging information by domain
+
+
+@subsection ZEP177 ZEP177: Enabling applications to provide domain inforamtion
+The logging system shall enable Applications to provide additional information such as the domain being logged
+
+
+@subsection ZEP178 ZEP178: Log Levels
+Log levels shall be for example error, info, debug or warning.
+
+
+@subsection ZEP179 ZEP179: Severity level check for applications by logging system
+The logging system shall provide the possibility for applications to check the current active severity level.
+
+
+@subsection ZEP181 ZEP181: Support output to system console for logging subsystem
+The logging subsystem shall support output to the system console 
+
+
+@subsection ZEP182 ZEP182: Logging subsystem UART backend support
+The logging subsystem shall support a UART backend
+
+
+@subsection ZEP184 ZEP184: Dedicated thread for processing logging activities
+The logging system shall be able to process all logging activities using a dedicated thread
+
+
+@subsection ZEP186 ZEP186: Dropping old messages in logging
+Logging shall support dropping old messages to save memory
+
+
+@subsection ZEP187 ZEP187: Run-time filtering support in the logging system
+The logging system shall support run-time filtering on a per module instance level
+
+
+@subsection ZEP188 ZEP188: Logging compile-time filtering support
+The logging system shall support compile-time filtering on a per module basis
+
+
+
+@section Mailbox
+
+@subsection ZEP191 ZEP191: Enhanced message queue 
+The kernel shall provide a kernel object that provides enhanced message queue capabilities that go beyond the capabilities of a message queue object. 
+
+
+@subsection ZEP192 ZEP192: Exchanging mailbox messages synchronously or asynchronously
+The kernel shall allow mailbox messages to be exchanged synchronously or asynchronously.
+
+
+@subsection ZEP193 ZEP193: Specifying thread address for sending messages
+The kernel shall allow the sending thread to specify the address of the thread to which the message is sent, or send it to any thread
+
+
+@subsection ZEP194 ZEP194: Application definition mailboxes
+An application shall be able to define any number of mailboxes.
+
+
+@subsection ZEP195 ZEP195: Tagging identity of exchanged messages
+Messages exchanged shall be tagged with the identity of the sending thread. 
+
+
+@subsection ZEP196 ZEP196: Sending and receiving synchronous or asynchronous messages
+A mailbox allows threads to send and receive messages of any size synchronously or asynchronously.
+
+
+@subsection ZEP197 ZEP197: Defining and initializing mailboxes at compile time
+The kernel shall provide a mechanism for defining and initializing mailboxes at compile time
+
+
+
+@section Memory Protection
+
+@subsection ZEP200 ZEP200: Inspecting an untrusted C string from user thread
+A system call handler must be able to safely inspect an untrusted C string passed in from a user thread and determine its length, up to a specified limit.
+
+
+@subsection ZEP201 ZEP201: Passing limited size null terminated C strings
+The OS shall support passing limited size null terminated c strings to a system call handler. 
+
+
+@subsection ZEP203 ZEP203: Handling invocations of unimplemented system calls
+The kernel shall safety handle invocations of unimplemented system calls or invalid system call IDs.
+
+
+@subsection ZEP204 ZEP204: Scrub CPU registers for sensitive data
+Upon exit of a system call back to the calling thread, the kernel shall scrub CPU registers of any sensitive data.
+
+
+@subsection ZEP205 ZEP205: Handling system calls on a separate private stack
+The kernel shall handle system calls on a separate, private stack which is not accessible to the calling thread.
+
+
+@subsection ZEP207 ZEP207: Definition of boot-time memory regions
+The system shall allow for the definitions of boot-time memory regions whose permission attributes apply to all threads.
+
+
+@subsection ZEP209 ZEP209: Common system heap
+Zephyr shall support assigning the common system heap as its memory pool.
+
+
+@subsection ZEP210 ZEP210: Freeing memory drawn
+The kernel shall support freeing memory drawn from a thread's resource pool. 
+
+
+@subsection ZEP211 ZEP211: Thread resource pools
+The kernel shall provide a thread resource pool for system call handlers or kernel APIs. 
+
+
+@subsection ZEP212 ZEP212: Child thread inheritance
+A child thread shall inherit the resource pool assignment of their parent.
+
+
+@subsection ZEP214 ZEP214: Mechanism for detecting supervisor thread overflow
+The system shall provide an optional mechanism to detect when supervisor mode threads overflow their stack memory buffer. No guarantees about the integrity of kernel  memory when this occurs can be made.
+
+
+@subsection ZEP216 ZEP216: Memory Domain API access
+Access to memory domain APIs must be restricted to supervisor threads only.
+
+
+@subsection ZEP217 ZEP217: Determining application memory partition
+The system shall automatically determine application memory partition base addresses and sizes at build time, determined by their contents.
+
+
+@subsection ZEP218 ZEP218: Application memory partition size and aliagnment
+The system shall ensure application memory partitions are automatically sized and aligned per the constraints of the platform's memory management hardware.
+
+
+@subsection ZEP219 ZEP219: Assigning global data and BSS variable to application memory partitions
+The system shall support applications assigning global data and BSS variables to application memory partitions using annotation macros, distinguishing between data that is assigned at build time or simply zeroed.
+
+
+@subsection ZEP220 ZEP220: Removing threads from memory domain
+The OS shall support removing a thread from its memory domain assignment.
+
+
+@subsection ZEP221 ZEP221: Adding thread as a member to a single memory domain
+The OS shall support adding a thread as a member to a single memory domain. When the thread is active, the thread shall have specified access to the partition definitions within the domain.
+
+
+@subsection ZEP222 ZEP222: Definition of memory partitions
+The system shall support the definition of memory partitions. A memory partition consists of a starting address, a size, and a set of access attributes.
+
+
+@subsection ZEP223 ZEP223: Adding a partition to a memory domain
+When adding a partition to a memory domain, the system should assert that the starting address, size, and access attributes are compatible with the underlying memory management hardware
+
+
+@subsection ZEP224 ZEP224: Memory domain destruction
+A memory domain may be destroyed, which removes all thread assignments to it.
+
+
+@subsection ZEP225 ZEP225: Adding a partition to a memory domain
+When adding a partition to a memory domain, the system should assert that the underlying memory management hardware has free resources (such as MPU regions) to accommodate the added partition
+
+
+@subsection ZEP226 ZEP226: Subsystem library support
+The kernel shall support subsystem libraries which contain their own global data and place their globals in a named application memory partition which is exposed in a header file, so that threads using the library can add the partition to their memory domain.
+
+
+@subsection ZEP227 ZEP227: Obtaining names of data and BSS sections
+The system shall provide means to obtain the names of the data and BSS sections related to a particular application memory partition at build time, for APIs which take a destination section as an argument.
+
+
+@subsection ZEP228 ZEP228: Memory Domain Definition
+The system shall support the definition of memory domains. A memory domain is a set of memory partitions, up to some limit configured at build time.
+
+
+@subsection ZEP229 ZEP229: Child thread memory domain inheritance
+Child threads shall inherit the memory domain assignment of their parent.
+
+
+@subsection ZEP230 ZEP230: Adding application memory partitions to memory domains
+The kernel shall support adding application memory partitions to memory domains like any other memory partition.
+
+
+@subsection ZEP231 ZEP231: Adding a partition to a memory domain
+When adding a partition to a memory domain, the system should assert that it does not overlap with any other partitions in the domain.
+
+
+@subsection ZEP233 ZEP233: Child inheritance of object permissions
+The OS shall support child thread inheritance of object permissions of the parent thread at creation time, except the parent thread object itself.
+
+
+@subsection ZEP234 ZEP234: Thread permissions on a kernel object
+A thread may be granted permission on a kernel object. If the caller is a user thread, the caller must already have permission on the thread object being granted access, and the target object.
+
+
+@subsection ZEP235 ZEP235: Supervisor thread support
+The OS shall support supervisor threads granting kernel objects public status, allowing all threads to have access to them. 
+
+
+@subsection ZEP236 ZEP236: Object types may be dynamically allocated by threads
+A subset of kernel object types may be dynamically allocated by threads, drawing memory from the calling thread's resource pool. If access to the object is tracked by the permission system, the requestor thread will implicitly be assigned permission on the allocated object.
+
+
+@subsection ZEP237 ZEP237: Using object permission as a reference count
+Dynamically allocated kernel objects whose access is controlled by the permission system will use object permission as a reference count. If no threads have access to an object, that object may have any associated cleanup operations implicitly performed, and the object's memory released back to its originiating resource pool.
+
+
+@subsection ZEP238 ZEP238: Freeing kernel objects at runtime
+The OS shall support freeing Kernel objects allocated at runtime manually by supervisor threads.
+
+
+@subsection ZEP239 ZEP239: Private kernel data
+Kernel objects which contain private kernel data within their associated data structures must be located within private kernel memory and system call access to these objects must be tracked with the kernel object permission system.
+
+
+@subsection ZEP240 ZEP240: Associate kernel object memory addresses 
+For all kernel objects which are accessible via system calls, the system must be able to associate kernel object memory addresses with whether the calling thread has access to the object, that the object is of the expected type, and the object is of the expected initialization state.
+
+
+@subsection ZEP241 ZEP241: Statically allocating kernel objects at build time
+Kernel objects may be statically allocated at build time, without requiring any manual registration by the end user.
+
+
+@subsection ZEP242 ZEP242: Revoking permissions on a kernel object
+The OS shall support revoking permission on a kernel object. User threads may only revoke their own access to an object.
+
+
+@subsection ZEP243 ZEP243: Locating kernel objects without private kernel data
+The OS shall support locating kernel objects which do not contain private kernel data (such as futexes) anywhere in memory and control access with the memory domain configuration.
+
+
+@subsection ZEP245 ZEP245: Appropriate access permissions for a system call
+The kernel shall provide means for a system call handler to determine whether the caller has appropriate access permissions on an untrusted pointer/size passed in.
+
+
+@subsection ZEP246 ZEP246: Failed system calls on kernel objects
+The kernel will fail system calls on kernel objects that track thread permissions, on threads that do not have permission granted on the object.
+
+
+@subsection ZEP247 ZEP247: Killing the calling thread by a system call handler
+When a system call handler elects to kill the calling thread, the kernel shall produce exception information which indicates the context where the faulting system call was made from user code.
+
+
+@subsection ZEP248 ZEP248: Generating fatal error
+System call handler checks which do not return an error code to the caller must generate a fatal error instead if the check fails.
+
+
+@subsection ZEP249 ZEP249: Checking drivers implements called API
+System call handlers for device driver subsystem APIs must check that the driver implements the particular API being called.
+
+
+@subsection ZEP251 ZEP251: User threads creating new threads
+The kernel shall prevent user threads creating new threads from using thread or thread stack objects which are in an initialized (in-use) state.
+
+
+@subsection ZEP252 ZEP252: Preventing user threads from creating supervisor threads
+The kernel shall prevent user threads from creating supervisor threads.
+
+
+@subsection ZEP253 ZEP253: Unitilizaing exit thread and thread stack objects
+Upon thread exit, the kernel shall mark the exiting thread and thread stack objects as un-initialized.
+
+
+@subsection ZEP254 ZEP254: Supervisor mode privilege drop
+The kernel shall provide a means for a thread running in supervisor mode to perform a one-way operation to drop privileges to user mode. Any sensitive data on the stack must be scrubbed.
+
+
+@subsection ZEP255 ZEP255: Read/write access 
+The kernel shall provide all threads read/write access to their own stack memory buffer.
+
+
+@subsection ZEP256 ZEP256: User thread creating new threads
+The kernel shall prevent user threads from creating new threads that are higher priority than the caller.
+
+
+@subsection ZEP257 ZEP257: Access to thread objects
+The kernel shall provide new user threads access to their own thread object.
+
+
+@subsection ZEP258 ZEP258: User threads creating new threads
+The kernel shall ensure user threads creating new threads have permission on the target thread and thread stack objects. These objects shall be marked as initialized if the creation succeeds.
+
+
+@subsection ZEP259 ZEP259: Validating new threads' stack sizes
+The kernel shall validate that new threads' stack sizes are not larger than the target thread stack object capacity.
+
+
+
+@section Message Queue
+
+@subsection ZEP262 ZEP262: Defining and initializing message queues at compile time
+The kernel shall provide a mechanism for defining and initializing message queues at compile time
+
+
+@subsection ZEP263 ZEP263: Blocking a thread from an empty message queue
+The kernel shall block a thread when it reads from an empty message queue 
+
+
+@subsection ZEP264 ZEP264: Receiving data items
+A data item can be received from a message queue by a thread.
+
+
+@subsection ZEP265 ZEP265: Sending data item to a message queue
+The kernel shall support sending a data item to a message queue by a thread or an ISR.
+
+
+@subsection ZEP266 ZEP266: Application definition of message queues
+An application shall be able to define any number of message queues
+
+
+@subsection ZEP267 ZEP267: Blocking operations
+All blocking operations shall support providing a timeout defining the maximum time the thread will wait
+
+
+@subsection ZEP268 ZEP268: Blocking a thread from a full message queue
+The kernel shall support blocking a thread when it writes to a full message queue 
+
+
+
+@section SMP
+
+@subsection ZEP271 ZEP271: Thread scheduling on CPUs
+Threads shall not be scheduled on CPUs outside their mask set.
+
+
+@subsection ZEP272 ZEP272: CPU mask maechanism
+The kernel shall provide a CPU mask mechanism to associate threads with a specific set of CPUs on which they will run.
+
+
+@subsection ZEP274 ZEP274: Compatible, global, recursive IRQ lock abstraction
+The kernel shall support a compatible, global, recursive IRQ lock abstraction for the benefit of code written to uniprocessor synchronization.
+
+
+@subsection ZEP275 ZEP275: Identical scheduling and priority API
+The kernel shall support an identical scheduling and priority API in SMP and uniprocessor modes
+
+
+@subsection ZEP276 ZEP276: Symmetric execution on any CPU
+Threads on a SMP kernel shall be able to execute symmetrically on any CPU in the system
+
+
+@subsection ZEP278 ZEP278: Mutual exclusion for spinlocks in uniprocessor contexts
+Spinlocks in uniprocessor context should achieve mutual exclusion using interrupt masking
+
+
+@subsection ZEP279 ZEP279: Locking spinlocks to provide mutual exclusion
+Spinlocks may be locked to provide mutual exclusion between multiple CPUs using atomic APIs
+
+
+@subsection ZEP280 ZEP280: Spinlock support
+The kernel shall support an arbitrary number of spinlocks, identified by their address, and initialized at either compile or run-time.
+
+
+
+@section Mutex
+
+@subsection ZEP283 ZEP283: Recursive mutexes
+The kernel shall support recursive mutexes.  A lock of a mutex already locked will succeed, and waiters will be unblocked only when the number of locks reaches zero.
+
+
+@subsection ZEP284 ZEP284: Mutex priority inheritance
+The thread that has locked a mutex shall be eligible for priority inheritance. This means the kernel will temporarily elevate the thread's priority if a higher priority thread begins waiting on the mutex.
+
+
+@subsection ZEP285 ZEP285: Defining and initializing mutexes 
 A mutex can be defined and initialized at compile time or run time
 
 
-@subsection ZEP005 ZEP005: Mutex lock operations
-The mutex lock operation shall accept a timeout parameter indicating the
-maximum amount of time the thread will wait
+@subsection ZEP286 ZEP286: Mutex lock operations
+The mutex lock operation shall accept a timeout parameter indicating the maximum amount of time the thread will wait
 
 
-@subsection ZEP006 ZEP006: Application definition of mutexes
+@subsection ZEP287 ZEP287: Application definition of mutexes
 An application shall be able to define any number of mutexes
+
+
+
+@section Pipes
+
+@subsection ZEP290 ZEP290: Timeout parameter
+The kernel shall support supplying a timeout parameter indicating the maximum amount of time a process will wait
+
+
+@subsection ZEP291 ZEP291: Defining and initializing pipes at run time
+The kernel shall provide a mechanism for defining and initializing pipes at run time
+
+
+@subsection ZEP292 ZEP292: Application definition of pipes
+An application shall be able to define any number of pipes
+
+
+@subsection ZEP293 ZEP293: Defining and initializing pipes at compile time
+The kernel shall provide a mechanism for defining and initializing pipes at compile time
+
+
+@subsection ZEP294 ZEP294: Sending kernel memory blocks into a pipe
+The kernel shall support sending a kernel memory block into a pipe
+
+
+
+@section Poll
+
+@subsection ZEP297 ZEP297: Queue data available events waitable events in poll
+The kernel shall support queue data available events as waitable events in poll 
+
+
+@subsection ZEP298 ZEP298: Semaphore put events as waitable events
+The kernel shall support semaphore put events as waitable events in poll
+
+
+@subsection ZEP299 ZEP299: Timeout argument
+The kernel shall support a single timeout argument indicating the maximum amount of time a thread shall wait in poll
+
+
+@subsection ZEP300 ZEP300: Application-defined signals as waitable events
+The kernel shall support application-defined signals as waitable events in poll
+
+
+
+@section Power Management
+
+@subsection ZEP303 ZEP303: Notification of device drivers to system power state changes
+The system shall support notification of device drivers on changes to system power state 
+
+
+@subsection ZEP304 ZEP304: Timeout Parameter to the idle routine
+The system shall provide a timeout parameter to the idle routine indicating the amount of time guaranteed to expire before the next timeout
+
+
+@subsection ZEP305 ZEP305: Mechanism to suppress system power state transitions
+The system shall provide a mechanism to the application to suppress system power state transitions 
+
+
+@subsection ZEP306 ZEP306: Notification of changes to system power state
+The system shall provide  notification of changes to system power state
+
+
+@subsection ZEP307 ZEP307: Global idle routine
+The system shall provide a global idle routine executed when no other work is available 
+
+
+@subsection ZEP308 ZEP308: Control of power state ordering
+The system shall support control of power state ordering between subsystems and devices
+
+
+
+@section Queues
+
+@subsection ZEP311 ZEP311: Queue definition
+An application shall be able to define any number of queues
+
+
+@subsection ZEP312 ZEP312: Kernel object for LIFO or FIFO
+The kernel shall provide a kernel object that implements a traditional Last In, First Out, or First In First Out queue, allowing threads and ISRs to add and remove data items of any size.
+
+
+@subsection ZEP313 ZEP313: Defining and initializing queues at compile time
+The kernel shall provide a mechanism for defining and initializing queues at compile time
+
+
+@subsection ZEP314 ZEP314: Kernel queues items
+Kernel queues may have an unlimited number of items added to them without requiring allocation of kernel memory, the queue data structures shall be stored within the provided data items
+
+
+
+@section Scheduling
+
+@subsection ZEP317 ZEP317: Selecting the highest priority ready thread
+The scheduler shall select the highest priority ready thread to be the current thread. By default, when multiple ready threads of the same priority exist, the scheduler shall choose the one that has been waiting longest.
+
+
+@subsection ZEP318 ZEP318: Supplanting a preemptable thread
+A preemptable thread may be supplanted at any time if a cooperative thread, or a preemptable thread of higher or equal priority becomes ready.
+
+
+@subsection ZEP319 ZEP319: Temporary treatment of a preemptive thread to a cooperative thread.
+A preemptive thread that does not wish to be preempted shall be able to lock the scheduler to temporarily treat it as cooperative thread.
+
+
+@subsection ZEP321 ZEP321: Deadline scheduling 
+The kernel shall support deadline scheduling, where threads with the same static priority are sorted according to the nearness of their "deadline" times.
+
+
+@subsection ZEP322 ZEP322: Thread priority level support
+The kernel shall support an arbitrary number of thread priority levels.
+
+
+@subsection ZEP323 ZEP323: Integer thread priority values
+Thread priority shall be able to be expressed in integer values
+
+
+@subsection ZEP324 ZEP324: Power management idle thread
+The kernel shall provide an idle thread at the lowest possible priority for power management tasks when nothing else is available to run
+
+
+@subsection ZEP326 ZEP326: Voluntarily yielding the CPU
+A cooperative thread shall be able to voluntarily yield the CPU to permit other threads or equal or higher priority to execute.
+
+
+@subsection ZEP327 ZEP327: Changing time slice size
+Time slice size shall be able to be changed while application is running.
+
+
+@subsection ZEP328 ZEP328: Cooperative Threading
+The kernel shall support cooperative threading, a cooperative thread remains the current thread until it performs an action that makes it unready.
+
+
+@subsection ZEP330 ZEP330: Delay thread processing and sleep
+A thread shall be able to delay its processing and sleep for at least a specififed time period during which other ready threads can execute.
+
+
+@subsection ZEP331 ZEP331: Busy Wait
+A thread shall be able to busy wait without yielding the CPU to another ready thread.
+
+
+@subsection ZEP332 ZEP332: Thread priority alteration
+Thread priority shall be able to be altered up or down after the thread has been started.
+
+
+@subsection ZEP333 ZEP333: Waking a sleeping thread from another thread
+The scheduler shall be able to wake up a sleeping thread from another thread.
+
+
+@subsection ZEP335 ZEP335: Time slice configuration
+Time slice size shall be configurable on a global basis
+
+
+@subsection ZEP336 ZEP336: Exhausting a time slice
+A thread that has exhausted its time slice shall not run until other threads of the same priority have exhausted theirs 
+
+
+@subsection ZEP337 ZEP337: Time-slicing with preemptable threads
+The scheduler shall support time-slicing with preemptable threads.
+
+
+
+@section Sensor Subsystem
+
+@subsection ZEP340 ZEP340: Sensor subsystem trigger type support
+The system shall support different types of triggers, based on time, data availability, threshold, based on a delta value, near/far events and single/double tap.  
+
+
+@subsection ZEP341 ZEP341: Sensor runtime parameter configuration
+The system shall allow configuration of runtime parameters in a sensor, for example threshold values for interrupts.
+
+
+@subsection ZEP343 ZEP343: Multiple channel sensor support
+A sensor shall support multiple channels, either to represent different axes of the same physical property or because they can measure different properties altogether
+
+
+@subsection ZEP344 ZEP344: Avoiding floating point values in sensor results
+Sensors shall return results in a representation that avoids use of floating point values
+
+
+@subsection ZEP345 ZEP345: Bus and address configuration at compile time
+The system shall allow configuration of bus and address at compile time, and if the sensor supports interrupts, the interrupt lines and triggering parameters should also be configured at compile time.
+
+
+@subsection ZEP346 ZEP346: Sensor reading values from channels
+The system shall allow sensors to be able to read value from its channels consistently. This must be done in two operations, first an instruction telling the driver to fetch a sample of all its channels and then get the values of each channel individually. 
+
+
+
+@section Stack
+
+@subsection ZEP349 ZEP349: K stack push operation
+The k stack push operation shall wait if the stack is full 
+
+
+@subsection ZEP350 ZEP350: K stack pop operation
+The k stack pop operation shall wait if no item is available
+
+
+@subsection ZEP351 ZEP351: Defining and initializing stacks at compile time
+The kernel shall provide a mechanism for defining and initializing stacks at compile time
+
+
+@subsection ZEP352 ZEP352: Push and pop operations accepting timeout parameters
+Push and pop operations shall accept a timeout parameter indicating the maximum amount of time the thread will wait
+
+
+@subsection ZEP353 ZEP353: Defining a k stack
+The kernel shall support defining a k stack with a fixed maximum number of entries
+
+
+
+@section Semaphores
+
+@subsection ZEP356 ZEP356: Semaphores may be taken by a thread
+A semaphore may be taken by a thread. Taking the semaphore shall decrement its count, unless the semaphore count is zero 
+
+
+@subsection ZEP357 ZEP357: Defining number of semaphores
+An application shall be able to define any number of semaphores
+
+
+@subsection ZEP358 ZEP358: Thread waiting on a semaphore
+Any number of threads may wait on a semaphore simultaneously.
+
+
+@subsection ZEP359 ZEP359: Semaphore thread priority
+When the semaphore is given, it is taken by the highest priority thread that has waited longest.
+
+
+@subsection ZEP360 ZEP360: Zero count semaphore
+When a semaphore count is zero, a thread will wait for it to be incremented by another thread
+
+
+@subsection ZEP361 ZEP361: Defining and initializing semaphore at compile time
+A semaphore can be defined and initialized at compile time with an application-specified count
+
+
+@subsection ZEP362 ZEP362: Accepting timeout arguments
+The kernel shall accept a timeout argument with a take operation that specifies the maximum amount of time the thread will wait
+
+
+@subsection ZEP363 ZEP363: Semaphore given by thread or ISR
+A semaphore may be given by a thread or an ISR.
+
+
+@subsection ZEP364 ZEP364: Semaphore properties
+A semaphore shall have the following properties: a count that indicated the number of times the semaphore can be taken and a limit that indicates the max. value the semaphore count can reach.
+
+
+
+@section Threads
+
+@subsection ZEP367 ZEP367: Statically initializing thread stacks
+The kernel shall supply a mechanism for statically initializing thread stacks in memory
+
+
+@subsection ZEP368 ZEP368: Thread ID
+Each thread shall have a thread ID used to reference the thread in question
+
+
+@subsection ZEP369 ZEP369: Human-readable name thread association 
+The kernel shall supply a mechanism for associating human-readable names with threads
+
+
+@subsection ZEP370 ZEP370: Thread synchronous end
+A thread may synchronously end its execution by returning from its entry point function.
+
+
+@subsection ZEP371 ZEP371: Custom data per thread
+The kernel shall support providing custom data per thread. The data will be thread specific and can be used by an application for any purpose.
+
+
+@subsection ZEP372 ZEP372: Configuring a thread at compile time
+The kernel shall be able to configure a thread at compile time
+
+
+@subsection ZEP373 ZEP373: Thread definition options
+A thread shall be defined with options to either start execution immediately or with a delay by specifying a timeout value
+
+
+@subsection ZEP374 ZEP374: Cancelling delayed start before thread execution
+The kernel shall allow delayed start to be cancelled before the thread starts execution
+
+
+@subsection ZEP376 ZEP376: Raising fatal errors
+The kernel shall raise a fatal system error if the idle thread aborts
+
+
+@subsection ZEP377 ZEP377: Thread abortion
+A thread can be aborted by another thread.
+
+
+@subsection ZEP378 ZEP378: Asynchronous thread end
+A thread may asynchronously end its execution by aborting.
+
+
+@subsection ZEP379 ZEP379: Application thread definition
+An application shall be able to define any number of threads
+
+
+@subsection ZEP381 ZEP381: Floating point context on thread context switch
+The kernel shall preserve floating point context on thread context switch
+
+
+@subsection ZEP382 ZEP382: Floating point register thread poilicy 
+The kernel should not incur floating point register save overhead for threads not using floating point
+
+
+@subsection ZEP383 ZEP383: Preventing accidental access between threads
+The kernel shall prevent accidental access from one thread to the floating point registers of another
+
+
+
+@section Timers
+
+@subsection ZEP386 ZEP386: Stopping a running timer
+A running timer can be stopped in mid-countdown, if desired.
+
+
+@subsection ZEP387 ZEP387: Timer status direct read
+A timer's status can be read directly at any time to determine how many times the timer has expired since its status was last read.
+
+
+@subsection ZEP388 ZEP388: Starting a timer
+A timer is started by specifying a duration until the function is invoked for the first time and a period between subsequent invocations.
+
+
+@subsection ZEP389 ZEP389: Defining and initializing a timer at compile time
+A timer can be defined and initialized at compile time
+
+
+@subsection ZEP390 ZEP390: Synchronizing threads to timers
+A thread may synchronize with the timer, waiting until the callback is next invoked.  
+
+
+@subsection ZEP391 ZEP391: Restarting a running timer
+A running timer can be restarted in mid-countdown, if desired.
+
+
+@subsection ZEP392 ZEP392: Application definition of timers
+An application shall be able to define any number of timers
+
+
+
+@section Debug and Tracing
+
+@subsection ZEP395 ZEP395: Tracing data identification and phase operation
+The consumer of the tracing data shall be able to identify and show the current phase of operation (thread, ISR, idle thread, etc.) based on the provided trace data.
+
+
+@subsection ZEP397 ZEP397: Dumping trace data in text format
+The tracing system shall support dumping the trace data in text format using existing logging and debug facilities available in the system
+
+
+@subsection ZEP398 ZEP398: Common tracing format support
+The tracing system shall support the common tracing format (CTF)
+
+
+@subsection ZEP400 ZEP400: Tracing calls not producing code when disabled
+All tracing calls shall not be producing code when the tracing system is disabled.
 
 
 

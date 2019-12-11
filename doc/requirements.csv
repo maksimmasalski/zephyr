@@ -1,33 +1,401 @@
-uid,level,text,ref,links,active,derived,header,normative,reviewed,group
-ZEP001,1.0,Mutex,,,TRUE,FALSE,,FALSE,,Mutexes
-ZEP002,1.1,"The kernel shall support recursive mutexes.  A lock of a mutex already locked will succeed, and waiters will be unblocked only when the number of locks reaches zero.",,,TRUE,FALSE,Recursive mutexes,TRUE,,Mutexes
-ZEP003,1.2,The thread that has locked a mutex shall be eligible for priority inheritance. This means the kernel will temporarily elevate the thread's priority if a higher priority thread begins waiting on the mutex.,,,TRUE,FALSE,Mutex priority inheritance,TRUE,,Mutexes
-ZEP004,1.3,A mutex can be defined and initialized at compile time or run time,,,TRUE,FALSE,Defining and initializing mutexes ,TRUE,,Mutexes
-ZEP005,1.4,The mutex lock operation shall accept a timeout parameter indicating the maximum amount of time the thread will wait,,,TRUE,FALSE,Mutex lock operations,TRUE,,Mutexes
-ZEP006,1.5,An application shall be able to define any number of mutexes,,,TRUE,FALSE,Application definition of mutexes,TRUE,,Mutexes
-ZEP007,2.0,Semaphores,,,TRUE,FALSE,,FALSE,,Semaphores
-ZEP008,2.1,"A semaphore may be taken by a thread. Taking the semaphore shall decrement its count, unless the semaphore count is zero ",,,TRUE,FALSE,Semaphores may be taken by a thread,TRUE,,Semaphores
-ZEP009,2.2,An application shall be able to define any number of semaphores,,,TRUE,FALSE,Defining number of semaphores,TRUE,,Semaphores
-ZEP010,2.3,Any number of threads may wait on a semaphore simultaneously.,,,TRUE,FALSE,Thread waiting on a semaphore,TRUE,,Semaphores
-ZEP011,2.4,"When the semaphore is given, it is taken by the highest priority thread that has waited longest.",,,TRUE,FALSE,Semaphore thread priority,TRUE,,Semaphores
-ZEP012,2.5,"When a semaphore count is zero, a thread will wait for it to be incremented by another thread",,,TRUE,FALSE,Zero count semaphore,TRUE,,Semaphores
-ZEP013,2.6,A semaphore can be defined and initialized at compile time with an application-specified count,,,TRUE,FALSE,Defining and initializing semaphore at compile time,TRUE,,Semaphores
-ZEP014,2.7,The kernel shall accept a timeout argument with a take operation that specifies the maximum amount of time the thread will wait,,,TRUE,FALSE,Accepting timeout arguments,TRUE,,Semaphores
-ZEP015,2.8,A semaphore may be given by a thread or an ISR.,,,TRUE,FALSE,Semaphore given by thread or ISR,TRUE,,Semaphores
-ZEP016,2.9,A semaphore shall have the following properties: a count that indicated the number of times the semaphore can be taken and a limit that indicates the max. value the semaphore count can reach.,,,TRUE,FALSE,Semaphore properties,TRUE,,Semaphores
-ZEP017,3.0,Threads,,,TRUE,FALSE,,FALSE,,Threads
-ZEP018,3.1,The kernel shall supply a mechanism for statically initializing thread stacks in memory,,,TRUE,FALSE,Statically initializing thread stacks,TRUE,,Threads
-ZEP019,3.2,Each thread shall have a thread ID used to reference the thread in question,,,TRUE,FALSE,Thread ID,TRUE,,Threads
-ZEP020,3.3,The kernel shall preserve floating point context on thread context switch,,,TRUE,FALSE,Floating point context on thread context switch,TRUE,,Threads
-ZEP021,3.4,The kernel shall raise a fatal system error if the idle thread aborts,,,TRUE,FALSE,Raising fatal errors,TRUE,,Threads
-ZEP022,3.5,The kernel shall supply a mechanism for associating human-readable names with threads,,,TRUE,FALSE,Human-readable name thread association ,TRUE,,Threads
-ZEP023,3.6,The kernel should not incur floating point register save overhead for threads not using floating point,,,TRUE,FALSE,Floating point register thread poilicy ,TRUE,,Threads
-ZEP024,3.7,A thread may synchronously end its execution by returning from its entry point function.,,,TRUE,FALSE,Thread synchronous end,TRUE,,Threads
-ZEP025,3.8,A thread can be aborted by another thread.,,,TRUE,FALSE,Thread abortion,TRUE,,Threads
-ZEP026,3.9,The kernel shall support providing custom data per thread. The data will be thread specific and can be used by an application for any purpose.,,,TRUE,FALSE,Custom data per thread,TRUE,,Threads
-ZEP027,3.10,A thread may asynchronously end its execution by aborting.,,,TRUE,FALSE,Asynchronous thread end,TRUE,,Threads
-ZEP028,3.11,An application shall be able to define any number of threads,,,TRUE,FALSE,Application thread definition,TRUE,,Threads
-ZEP029,3.12,The kernel shall be able to configure a thread at compile time,,,TRUE,FALSE,Configuring a thread at compile time,TRUE,,Threads
-ZEP030,3.13,A thread shall be defined with options to either start execution immediately or with a delay by specifying a timeout value,,,TRUE,FALSE,Thread definition options,TRUE,,Threads
-ZEP031,3.14,The kernel shall prevent accidental access from one thread to the floating point registers of another,,,TRUE,FALSE,Preventing accidental access between threads,TRUE,,Threads
-ZEP032,3.15,The kernel shall allow delayed start to be cancelled before the thread starts execution,,,TRUE,FALSE,Cancelling delayed start before thread execution,TRUE,,Threads
+DNGid,uid,level,text,ref,links,active,derived,header,normative,reviewed,group
+199109,ZEP001,1,Architecture Layer Interface,,,TRUE,,,FALSE,TRUE,Architecture Interface
+199362,ZEP002,1.1,On supporting architectures the kernel architecture layer shall support multiprocessing management facilities,,,TRUE,,Multiprocessing Management Facility Architecture Layer,FALSE,TRUE,Architecture Interface
+199869,ZEP003,1.1.1,The kernel architecture layer shall provide a mechanism to return a pointer to the current kernel CPU record of the running CPU,,,TRUE,,Return a pointer to current CPU record,TRUE,TRUE,Architecture Interface
+199868,ZEP004,1.1.2,The kernel architecture layer shall provide a mechanism to issue an interprocessor interrupt to all other CPUs in the system that calls the scheduler IPI handler,,,TRUE,,Interprocessor interrupt to all other CPUs,TRUE,TRUE,Architecture Interface
+199867,ZEP005,1.1.3,The kernel architecture layer shall provide a means to start non-boot CPUs on SMP systems,,,TRUE,,Start non-boot CPUs on SMP,TRUE,TRUE,Architecture Interface
+199361,ZEP006,1.2,The kernel architecture layer shall expose means for the kernel to access hardware interrupts ,,,TRUE,,Hardware Interrupt Access,FALSE,TRUE,Architecture Interface
+199865,ZEP007,1.2.1,The kernel architecture layer shall provide the ability to attach a specific C function to a specific named interrupt at run time,,,TRUE,,Attaching a specific C function to named interrupt,TRUE,TRUE,Architecture Interface
+199861,ZEP008,1.2.2,The kernel architecture layer shall provide a mechanism to restore the local interrupt state saved prior to a mask operation.,,,TRUE,,Mechanism to restore local interrupt state,TRUE,TRUE,Architecture Interface
+199863,ZEP009,1.2.3,The kernel architecture layer shall provide a mechanism to determine whether the current code is executing in an interrupt handler,,,TRUE,,Mechanism to determine code execution in interrupt handler,TRUE,TRUE,Architecture Interface
+199862,ZEP010,1.2.4,The kernel architecture layer shall provide a mechanism to selectively disable and enable specific numeric interrupts.,,,TRUE,,Mechanism to disable and enable numeric interrupts,TRUE,TRUE,Architecture Interface
+199860,ZEP011,1.2.5,The kernel architecture layer shall provide a mechanism to simultenously mask all local CPU interrupts and return the previous mask state for restoration,,,TRUE,,Mechanism to mask all local CPU interrupts,TRUE,TRUE,Architecture Interface
+199866,ZEP012,1.2.6,The kernel architecture layer shall provide a means to raise an interrupt from thread code that will run a user-provided C function under the interrupt context ,,,TRUE,,Raise an interrupt from thread code,TRUE,TRUE,Architecture Interface
+199864,ZEP013,1.2.7,The kernel architecture layer shall provide the ability to attach a specific C function to a specific named interrupt at build time,,,TRUE,,Attach a C function to interrupt at build,TRUE,TRUE,Architecture Interface
+199365,ZEP014,1.3,The kernel architecture layer shall provide a mechanism for context switching between threads. ,,,TRUE,,Thread Context Switching Mechanism,FALSE,TRUE,Architecture Interface
+199875,ZEP015,1.3.1,Thread context handles derived from context switches must be able to be restored upon interrupt exit,,,TRUE,,Thread context handle restoration,TRUE,TRUE,Architecture Interface
+199876,ZEP016,1.3.2,Thread context handles derived from interrupt entry must be able to be restored by context switch  ,,,TRUE,,Interrupt entry to be restored by context switch,TRUE,TRUE,Architecture Interface
+199363,ZEP017,1.4,The architecture layer shall provide utilites for managing the lifecycle of a running processor ,,,TRUE,,Utilities for Managing a Running Processor,FALSE,TRUE,Architecture Interface
+199872,ZEP018,1.4.1,The kernel architecture layer shall provide a idle function to be run when the system has no work for the current CPU,,,TRUE,,Providing idle function to be run ,TRUE,TRUE,Architecture Interface
+199870,ZEP019,1.4.2,The kernel architecture layer shall provide a 32 bit monotonically increasing cycle counter,,,TRUE,,32 bit increasing cycle counter,TRUE,TRUE,Architecture Interface
+199871,ZEP020,1.4.3,The kernel architecture layer shall provide an initialization hook that runs after C startup,,,TRUE,,Initialization hook after C startup,TRUE,TRUE,Architecture Interface
+199364,ZEP021,1.5,The kernel architecture layer shall enable handling of hardware exceptions,,,TRUE,,Hardware Exception Handling Architecture Layer,FALSE,TRUE,Architecture Interface
+199874,ZEP022,1.5.1,The kernel architecture layer shall provide a single handler for hardware exceptions,,,TRUE,,Single handler for hardware exceptions,TRUE,TRUE,Architecture Interface
+199873,ZEP023,1.5.2,The kernel architecture layer shall provide a mechanism to create a synchonous trap to a hardware exception handler,,,TRUE,,Create a synchronous trap to a hardware exception handler,TRUE,TRUE,Architecture Interface
+199104,ZEP024,2,Asynchronous Scheduling,,,TRUE,,,FALSE,TRUE,Workqueues
+199344,ZEP025,2.1,"The kernel shall provide a workqueue thread to process work items in a first in, first out manner.",,,TRUE,,Workqueue FIFO ,FALSE,TRUE,Workqueues
+199773,ZEP026,2.1.1,A work item shall be supplied as a user-defined callback function,,,TRUE,,Work items,TRUE,TRUE,Workqueues
+199771,ZEP027,2.1.2,"The kernel shall support scheduling a work item that is to be processed only after specified period of time, rather than immediately.",,,TRUE,,Scheduling a work item,TRUE,TRUE,Workqueues
+199774,ZEP028,2.1.3,The kernel shall support resubmitting a work item during execution of its callback ,,,TRUE,,Resubmitting a work item,TRUE,TRUE,Workqueues
+199770,ZEP029,2.1.4,The handler function of a work item shall be able to utilize any kernel API available to threads.,,,TRUE,,Handler function of work items,TRUE,TRUE,Workqueues
+199769,ZEP030,2.1.5,An application shall be able to define any number of workqueues,,,TRUE,,Defining workqueues,TRUE,TRUE,Workqueues
+199772,ZEP031,2.1.6,A workqueue may be created with a specific thread object supplied by the user upon initialization,,,TRUE,,Creating workqueues,TRUE,TRUE,Workqueues
+199116,ZEP032,3,Atomic Operations,,,TRUE,,,FALSE,TRUE,Atomic Operations
+199392,ZEP033,3.1,The system shall provide atomic APIs to manipulate memory without visibile intermediate state.,,,TRUE,,Atomic APIs,FALSE,TRUE,Atomic Operations
+199933,ZEP034,3.1.1,The system shall provide an atomic clear function.,,,TRUE,,Atomic Clear Functions,TRUE,TRUE,Atomic Operations
+199936,ZEP035,3.1.2,The system shall provide an atomic bitwise exclusive or function.,,,TRUE,,Atomic Bitwise exclusive or function,TRUE,TRUE,Atomic Operations
+199925,ZEP036,3.1.3,The kernel shall support the atomic manipulation of a single bit in an array of atomic variables.,,,TRUE,,Atomic manipulation,TRUE,TRUE,Atomic Operations
+199941,ZEP037,3.1.4,The system shall provide an atomic clear bit function.,,,TRUE,,Atomic Clear Bit Function,TRUE,TRUE,Atomic Operations
+199943,ZEP038,3.1.5,The system shall provide an atomic set bit to function.,,,TRUE,,Atomic Set Bit Function,TRUE,TRUE,Atomic Operations
+199934,ZEP039,3.1.6,The system shall provide an atomic bitwise or function.,,,TRUE,,"Atomic Bitwise ""or"" function",TRUE,TRUE,Atomic Operations
+199926,ZEP040,3.1.7,The system shall provide an atomic compare-and-swap function,,,TRUE,,Atomic compare-and-swap function,TRUE,TRUE,Atomic Operations
+199930,ZEP041,3.1.8,The system shall provide an atomic increment function.,,,TRUE,,Atomic increment function,TRUE,TRUE,Atomic Operations
+199932,ZEP042,3.1.9,The system shall provide an atomic set function.,,,TRUE,,"Atomic ""set"" function",TRUE,TRUE,Atomic Operations
+199942,ZEP043,3.1.10,The system shall provide an atomic set bit function.,,,TRUE,,Atomic set bit function,TRUE,TRUE,Atomic Operations
+199939,ZEP044,3.1.11,The system shall provide an atomic test and clear bit function.,,,TRUE,,Atomic test and clear bit function,TRUE,TRUE,Atomic Operations
+199935,ZEP045,3.1.12,The system shall provide an atomic bitwise and function.,,,TRUE,,"Atomic bitwise ""and"" function",TRUE,TRUE,Atomic Operations
+199937,ZEP046,3.1.13,The system shall provide an atomic bitwise nand function.,,,TRUE,,"Atomic bitwise ""nand"" function",TRUE,TRUE,Atomic Operations
+199931,ZEP047,3.1.14,The system shall provide an atomic decrement function.,,,TRUE,,Atomic decrement function,TRUE,TRUE,Atomic Operations
+199927,ZEP048,3.1.15,The kernel shall support atomic operations on 32bit quantities ,,,TRUE,,32bit quantities atomic operations,TRUE,TRUE,Atomic Operations
+199929,ZEP049,3.1.16,The system shall provide an atomic subtract function.,,,TRUE,,Atomic subtract function,TRUE,TRUE,Atomic Operations
+199940,ZEP050,3.1.17,The system shall provide an atomic test and set bit function.,,,TRUE,,Atomic test and set function,TRUE,TRUE,Atomic Operations
+199928,ZEP051,3.1.18,The system shall provide an atomic add function.,,,TRUE,,Atomic add function,TRUE,TRUE,Atomic Operations
+199938,ZEP052,3.1.19,The system shall provide an atomic test bit function.,,,TRUE,,Atomic test bit function,TRUE,TRUE,Atomic Operations
+199924,ZEP053,3.1.20,Any number of atomic variables can be defined.,,,TRUE,,Atomic variable definition,TRUE,TRUE,Atomic Operations
+199110,ZEP054,4,C Library Support,,,TRUE,,,FALSE,TRUE,C Library
+199366,ZEP055,4.1,The system shall provide a minimal C library implementation,,,TRUE,,Minimal C-Library,FALSE,TRUE,C Library
+199877,ZEP056,4.1.1,The OS shall support linking with external and compatible C standard library implementations,,,TRUE,,Linking with external C libraries,TRUE,TRUE,C Library
+199367,ZEP057,4.2,The system shall support external C library implementations ,,,TRUE,,External C-Library,FALSE,TRUE,C Library
+199878,ZEP058,4.2.1,The OS shall provide a minimal C standard library implementation covering POSIX_C_LANG_SUPPORT from the POSIX standard (https://pubs.opengroup.org/onlinepubs/9699919799/xrat/V4_subprofiles.html),,,TRUE,,Minimal C library for POSIX,TRUE,TRUE,C Library
+199879,ZEP059,4.2.2,"The OS shall support implementation defined hooks not provided by the C library implementation (low-level filesystem access, requests to enlarge its memory heap, getting the time of day, and various types of context management like process forking and killing. )",,,TRUE,,Defined hooks not provided by C library,TRUE,TRUE,C Library
+199108,ZEP060,5,Data Structures Library Utilities,,,TRUE,,,FALSE,TRUE,Data Structures
+199359,ZEP061,5.1,Zephyr shall provide a ring buffer data structure of arbitrary size,,,TRUE,,Ring Buffer Data Structure,FALSE,TRUE,Data Structures
+199853,ZEP062,5.1.1,The ring buffer shall return an error if insufficient data is available to read,,,TRUE,,Ring buffer insufficient data error,TRUE,TRUE,Data Structures
+199848,ZEP063,5.1.2,The OS shall support placing the ring buffer in any user-controlled memory,,,TRUE,,Ring buffer in user-controlled memory,TRUE,TRUE,Data Structures
+199851,ZEP064,5.1.3,The ring buffer shall return an error if no space is available for an insert operation,,,TRUE,,Ring buffer error return,TRUE,TRUE,Data Structures
+199849,ZEP065,5.1.4,The ring buffer shall be stored as a contiguous array of pointer-sized words,,,TRUE,,Ring buffer storage,TRUE,TRUE,Data Structures
+199852,ZEP066,5.1.5,The ring buffer shall copy data out of the array from the beginning of the index-wrapped in-use data.,,,TRUE,,Ring buffer data copy out of array,TRUE,TRUE,Data Structures
+199850,ZEP067,5.1.6,Ring buffer data shall be copied into the array at the end of the (index-wrapped) in-use data,,,TRUE,,Ring buffer data copy into array,TRUE,TRUE,Data Structures
+199360,ZEP068,5.2,"Zephyr shall provide a balanced ""red/black"" tree data structure: rbtree.",,,TRUE,,rbtree Data Structure,FALSE,TRUE,Data Structures
+199855,ZEP069,5.2.1,The rbtree node struct must be embeddedable in any user struct,,,TRUE,,Embeddedable rbtree node struct,TRUE,TRUE,Data Structures
+199858,ZEP070,5.2.2,The rbtree must provide logarithmic time access to the minimum and maximum elements of the tree,,,TRUE,,Rtree logarithmic time access ,TRUE,TRUE,Data Structures
+199859,ZEP071,5.2.3,"The rbtree shall provide a ""for each"" style iteration API",,,TRUE,,"Rbtree ""for each"" style iteration API",TRUE,TRUE,Data Structures
+199854,ZEP072,5.2.4,"The rbtree must support any user-provided ""less than"" predicate function",,,TRUE,,"Rbtree ""less than"" predicate function",TRUE,TRUE,Data Structures
+199857,ZEP073,5.2.5,The rbtree insert and remove operations must run in logarithmic time in the size of the tree,,,TRUE,,Rbtree insert and remove operations,TRUE,TRUE,Data Structures
+199856,ZEP074,5.2.6,The rbtree node struct must be placeable in in any user-controlled memory,,,TRUE,,Rbtree in user-controlled memory,TRUE,TRUE,Data Structures
+199358,ZEP075,5.3,"Zephyr shall provide a doubly-linked list ""dlist"" data structure",,,TRUE,,dlist Data Structure,FALSE,TRUE,Data Structures
+199843,ZEP076,5.3.1,The dlist node struct must be embeddedable in any user struct,,,TRUE,,Embeddedable dlist struct,TRUE,TRUE,Data Structures
+199847,ZEP077,5.3.2,"The dlist shall provide constant time access to the ""head"" and ""tail"" of the list",,,TRUE,,Dlist constant time access,TRUE,TRUE,Data Structures
+199844,ZEP078,5.3.3,The dlist node struct must be placeable in any user-controlled memory,,,TRUE,,Place-able dlist node struct,TRUE,TRUE,Data Structures
+199846,ZEP079,5.3.4,"The dlist shall provide a ""for each"" style iteration API",,,TRUE,,"Dlist ""for each"" style iteration API",TRUE,TRUE,Data Structures
+199845,ZEP080,5.3.5,The dlist insert and remove operations must run in constant time,,,TRUE,,Dlist insert and remove operations,TRUE,TRUE,Data Structures
+199112,ZEP081,6,Device Driver Abstracting,,,TRUE,,,FALSE,TRUE,Device Driver
+199385,ZEP082,6.1,"The system shall provide abstraction of device drivers with common functionalities (e.g. I2C, SPI) as an intermediate interface between applications and device drivers, where such interface is implemented by individual device drivers.",,,TRUE,,Device Driver Abstraction,FALSE,TRUE,Device Driver
+199902,ZEP083,6.1.1,"The kernel shall provide control over device driver initalization order, using initialization level and priority for each instance.",,,TRUE,,Providing control device driver initialization order,TRUE,TRUE,Device Driver
+199901,ZEP084,6.1.2,The kernel shall provide APIs to return the device driver instance given an identifier associated with that instance.,,,TRUE,,APIs to return the device driver instance,TRUE,TRUE,Device Driver
+199905,ZEP085,6.1.3,"Abstraction of device drivers with common functionalities (e.g. I2C, SPI) shall be provided as an intermediate interface between applications and device drivers, where such interface is implemented by individual device drivers.",,,TRUE,,Abstraction of device drivers with common functionalities,TRUE,TRUE,Device Driver
+199907,ZEP086,6.1.4,The kernel shall provide APIs to enable and disable automatic idle power management,,,TRUE,,APIs to enable and disable automatic idle power management,TRUE,TRUE,Device Driver
+199903,ZEP087,6.1.5,The kernel shall support initialisation priorities for device driver instances.,,,TRUE,,Initialization priorities for device driver instances,TRUE,TRUE,Device Driver
+199904,ZEP088,6.1.6,The kernel shall provide APIs to connect interrupts to device driver instances.,,,TRUE,,APIs to connect interrupts to device driver instances,TRUE,TRUE,Device Driver
+199900,ZEP089,6.1.7,"The kernel shall provide APIs for developers to define and instantiate a device driver instance, where each instance has an identifier.",,,TRUE,,APIs to define and instantiate a device driver instance,TRUE,TRUE,Device Driver
+199906,ZEP090,6.1.8,The kernel shall provide APIs for applications for getting the current power states and to manipulate the power states of devices.,,,TRUE,,APIs for applications for getting and manipulating power states,TRUE,TRUE,Device Driver
+199117,ZEP091,7,Dynamic Memory Allocation,,,TRUE,,,FALSE,TRUE,Memory Pool / Memory Slabs
+199262,ZEP092,7.1,The kernel shall support a memory pool object that allows threads to dynamically allocate variable-sized memory from a specified memory region in a malloc()-like manner.,,,TRUE,,Dynamic Memory Pool Object,FALSE,TRUE,Memory Pool / Memory Slabs
+199945,ZEP093,7.1.1,An application shall be able to define any number of memory pools,,,TRUE,,Application definition of memory pools,TRUE,TRUE,Memory Pool / Memory Slabs
+199948,ZEP094,7.1.2,"The kernel shall support providing a timeout value to allocating memory, to wait if there are no free memory blocks for one to become available",,,TRUE,,Timeout values to allocating memory,TRUE,TRUE,Memory Pool / Memory Slabs
+199946,ZEP095,7.1.3,A thread can dynamically allocate a region of heap memory,,,TRUE,,Dynamically allocated heap memory region,TRUE,TRUE,Memory Pool / Memory Slabs
+199944,ZEP096,7.1.4,A memory pool can be defined and initialized at compile time,,,TRUE,,Memory pool initialization and definition at compile time,TRUE,TRUE,Memory Pool / Memory Slabs
+199947,ZEP097,7.1.5,When the thread is finished with a region of heap memory it shall be able to release the region back to the heap memory pool,,,TRUE,,Releasing heap memory to pool,TRUE,TRUE,Memory Pool / Memory Slabs
+199949,ZEP098,7.1.6,The memory pool API must be useable from user mode managing memory within the protected space.,,,TRUE,,Memory pool API,TRUE,TRUE,Memory Pool / Memory Slabs
+199950,ZEP099,7.1.7,The kernel shall ensure that the memory pool buffer is aligned to native word length boundaries,,,TRUE,,Memory pool buffer alignment,TRUE,TRUE,Memory Pool / Memory Slabs
+199263,ZEP100,7.2,The kernel shall support a memory slab object that allows threads to dynamically allocate fixed-sized memory from a specified memory region,,,TRUE,,Memory Slab Object,FALSE,TRUE,Memory Pool / Memory Slabs
+199951,ZEP101,7.2.1,"An application shall be able to define any number of memory slabs, with each slab containing an arbitrary number of fixed-sized blocks",,,TRUE,,Application definition of memory slabs,TRUE,TRUE,Memory Pool / Memory Slabs
+199954,ZEP102,7.2.2,The kernel shall ensure that the memory slab buffer is aligned to native word length boundaries,,,TRUE,,Memory slab buffer alignment,TRUE,TRUE,Memory Pool / Memory Slabs
+199953,ZEP103,7.2.3,A memory slab must be initialized before it can be used. This marks all of its blocks as unused.,,,TRUE,,Memory slab intialization,TRUE,TRUE,Memory Pool / Memory Slabs
+199952,ZEP104,7.2.4,A memory slab can be defined and initialized at compile time,,,TRUE,,Memory slab initialization and definition at compile time,TRUE,TRUE,Memory Pool / Memory Slabs
+199106,ZEP105,8,Fatal Exception handling,,,TRUE,,,FALSE,TRUE,Fatal Exception Handling
+199348,ZEP106,8.1,The kernel shall provide handlers for fatal errors or exceptions that do not have a dedicated handler,,,TRUE,,Fatal Exception Error Handling,FALSE,TRUE,Fatal Exception Handling
+199790,ZEP107,8.1.1,"The default policy for fatal errors shall be to suspend all threads, attempt to flush output buffers, and halt the system.",,,TRUE,,Fatal error default policy,TRUE,TRUE,Fatal Exception Handling
+199787,ZEP108,8.1.2,A fatal error which is the result of a stack overflow will report a distinct reason code for this condition,,,TRUE,,Results of a stack overflow,TRUE,TRUE,Fatal Exception Handling
+199788,ZEP109,8.1.3,"If kernel debugging messages are enabled, the fatal error should dump the ID of the faulting thread and the type of the error",,,TRUE,,Fatal error kernel debugging messages,TRUE,TRUE,Fatal Exception Handling
+199785,ZEP110,8.1.4,A fatal error which occurs while servicing an interrupt or exception shall have a specific reason code,,,TRUE,,Specific reason code for fatal errors,TRUE,TRUE,Fatal Exception Handling
+199786,ZEP111,8.1.5,"The application must be able to override the fatal error handling function to implement their own policy upon fatal error, which gets passed the reason for the fatal error and an architecture-specific struct containing the system register state",,,TRUE,,Applications implementing their own policy upon fatal error,TRUE,TRUE,Fatal Exception Handling
+199789,ZEP112,8.1.6,Any processing or examination of the faulting thread's stack during fatal error handling must treat the stack contents as untrusted and potentionally malicious.,,,TRUE,,Processing or examination of the faulting thread's stack,TRUE,TRUE,Fatal Exception Handling
+199783,ZEP113,8.1.7,Any interrupt or exception that does not have a handler installed shall trigger a fatal error,,,TRUE,,Interrupts or exception without handlers,TRUE,TRUE,Fatal Exception Handling
+199784,ZEP114,8.1.8,"A fatal error may be deliberately induced at runtime, with an integer reason code",,,TRUE,,Inducing fatal error at runtime,TRUE,TRUE,Fatal Exception Handling
+,ZEP115,9,File Sysytem,,,TRUE,,,FALSE,TRUE,File System
+205738,ZEP116,9.1,The system shall provide an abstraction for file system operations that is file system agnostic,,,TRUE,,Agnostic File system abstraction,FALSE,TRUE,File System
+205537,ZEP117,9.1.1,The system shall support multiple file systems simultanously,,,TRUE,,Multiple File System Support,TRUE,TRUE,File System
+205538,ZEP118,9.1.2,The system shall support registering and unregistering file system backends,,,TRUE,,File system backend registering and unregistering ,TRUE,TRUE,File System
+205739,ZEP119,9.2,The system shall support common file system operations through a general interface,,,TRUE,,General interface for common file system operations,FALSE,TRUE,File System
+205546,ZEP120,9.2.1,The system shall provide an interface to flush the associated stream and closes the file,,,TRUE,,Interface to flush stream and close a file,TRUE,TRUE,File System
+205548,ZEP121,9.2.2,The system shall provide an interface to read directory entries of a open directory,,,TRUE,,Interface to read directory entries,TRUE,TRUE,File System
+205545,ZEP122,9.2.3,The system shall provide an interface to flush the cache of an open file,,,TRUE,,Interface for flushing cache of an open file,TRUE,TRUE,File System
+205544,ZEP123,9.2.4,The system shall provide an interface to truncate the file to the new length,,,TRUE,,Interface to truncate a file,TRUE,TRUE,File System
+205550,ZEP124,9.2.5,The system shall provide an interface to mount a file system,,,TRUE,,Interface to mount a file system,TRUE,TRUE,File System
+205541,ZEP125,9.2.6,The system shall provide an interface to write items of data of size bytes long,,,TRUE,,Interface for writing items,TRUE,TRUE,File System
+205555,ZEP126,9.2.7,The system shall provide an interface to check the status of a file or directory specified by the path,,,TRUE,,Interface to check the status of a file or directory,TRUE,TRUE,File System
+205543,ZEP127,9.2.8,The system shall provide an interface to retrieve the current position in the file,,,TRUE,,Interface to retrieve current position,TRUE,TRUE,File System
+205549,ZEP128,9.2.9,The system shall provide an interface to close an open directory,,,TRUE,,Interface to close an open directory,TRUE,TRUE,File System
+205552,ZEP129,9.2.10,The system shall provide an interface to delete the specified file or directory,,,TRUE,,Interface to delete file or directory,TRUE,TRUE,File System
+205554,ZEP130,9.2.11,The system shall provide an interface to create a new directory using specified path,,,TRUE,,Interface to create a new directory,TRUE,TRUE,File System
+205542,ZEP131,9.2.12,The system shall provide an interface to move the file position to a new location in the file,,,TRUE,,Interface to move file positions,TRUE,TRUE,File System
+205547,ZEP132,9.2.13,The system shall provide an interface to open an existing directory specified by the path,,,TRUE,,Interface to open existing directory,TRUE,TRUE,File System
+205556,ZEP133,9.2.14,The system shall provide an interface to return the total and available space in the filesystem volume,,,TRUE,,Interface to return total and available space in filesystem,TRUE,TRUE,File System
+205553,ZEP134,9.2.15,The system shall provide an interface to rename a file or directory,,,TRUE,,Interface to rename file or directory,TRUE,TRUE,File System
+205551,ZEP135,9.2.16,The system shall provide an interface to unmount a file system,,,TRUE,,Interface to un-mount a file system,TRUE,TRUE,File System
+205540,ZEP136,9.2.17,The system shall provide an interface to read items of data of size bytes long,,,TRUE,,Interface for reading items,TRUE,TRUE,File System
+205539,ZEP137,9.2.18,The system shall provide an interface to open an existing file or create a new file system,,,TRUE,,Interface for opening or creating a file system,TRUE,TRUE,File System
+199090,ZEP138,10,Interrupt Service Routine,,,TRUE,,,FALSE,TRUE,Interrupts
+199322,ZEP139,10.1,The kernel shall provide mechanisms to enable and disable mechanisms at runtime,,,TRUE,,Mechanisms to enable and disable mechanisms,FALSE,TRUE,Interrupts
+199409,ZEP140,10.1.1,Individual interrupts may be disabled to prevent processing of their interrupt service routines,,,TRUE,,Disabling individual interrupts,TRUE,TRUE,Interrupts
+199410,ZEP141,10.1.2,The kernel shall provide an API to mask/unmask all interrupts for the purposes of software mutual exclusion,,,TRUE,,Mask/unmask interrupt API,TRUE,TRUE,Interrupts
+199324,ZEP142,10.2,The kernel shall support multi-level interrupts,,,TRUE,,Multi-level interrupt support,FALSE,TRUE,Interrupts
+199419,ZEP143,10.2.1,The kernel shall provide a dedicated interrupt stack for processing hardware interrupts,,,TRUE,,Dedicated interrupt stack,TRUE,TRUE,Interrupts
+199420,ZEP144,10.2.2,The kernel should support interrupt nesting allowing an ISR to be preempted in mid-execution if a higher priority interrupt is signaled. The lower priority ISR resumes execution once the higher priority ISR has completed its processing.,,,TRUE,,Interrupt nesting,TRUE,TRUE,Interrupts
+199323,ZEP145,10.3,The kernel shall provide mechanisms for associating application code with specific interrupts,,,TRUE,,Application code association to interrupts,FALSE,TRUE,Interrupts
+199414,ZEP146,10.3.1,"The user shall be able to supply a word-sized parameter when configuring interrupts, which are passed to the interrupt service routine when the interrupt happens.",,,TRUE,,Configuring interrupts,TRUE,TRUE,Interrupts
+199413,ZEP147,10.3.2,The kernel shall support configuration of interrupts statically at build time.,,,TRUE,,Configuring interrupts statically at build time,TRUE,TRUE,Interrupts
+199416,ZEP148,10.3.3,The kernel shall support configuration of interrupts dynamically at runtime.,,,TRUE,,Configuring interrupts dynamically at runtime,TRUE,TRUE,Interrupts
+199418,ZEP149,10.3.4,"The kernel shall support multiple ISRs utilizing the same function to process interrupts, allowing a single function to service a device that generates multiple types of interrupts or to service multiple devices (usually of the same type)",,,TRUE,,Supporting multiple ISRs to process interrupts,TRUE,TRUE,Interrupts
+199411,ZEP150,10.3.5,The kernel shall provide a mechanism for synchronously running code after interrupt acknowledgement but before return to user threads.,,,TRUE,,Synchronously run code after interrupt,TRUE,TRUE,Interrupts
+199412,ZEP151,10.3.6,The kernel shall raise a fatal error if an interrupt or exception occurs that has no handler function installed,,,TRUE,,Raising a fatal error is for interrupt with no handler function ,TRUE,TRUE,Interrupts
+199417,ZEP152,10.3.7,The kernel shall support the use of IDT or a vector table is used to associate a given interrupt source with a given ISR. Only a single ISR can be associated with a specific IRQ at any given time.,,,TRUE,,IDT vector table,TRUE,TRUE,Interrupts
+199415,ZEP153,10.3.8,"The user should be able to configure ""direct"" interrupts which bypass common interrupt handling code, scheduling decisions, and parameters in order to service the interrupt in with the lowest latency possible.",,,TRUE,,"Configurable ""direct"" interrupts",TRUE,TRUE,Interrupts
+,ZEP154,11,Kernel Clock,,,TRUE,,,FALSE,TRUE,Kernel Clocks
+199325,ZEP155,11.1,The kernel shall provide a mechanism for the passage of realtime,,,TRUE,,Kernel clock for realtime passage of time,FALSE,TRUE,Kernel Clocks
+199681,ZEP156,11.1.1,The kernel shall support a 64bit uptime counter,,,TRUE,,64bit uptime counter,TRUE,TRUE,Kernel Clocks
+199682,ZEP157,11.1.2,The kernel shall provide a way to convert the time units used by the clocks into standard time units,,,TRUE,,Converting time units,TRUE,TRUE,Kernel Clocks
+199683,ZEP158,11.1.3,The kernel shall allow providing time durations in milliseconds,,,TRUE,,Millisecond time duration,TRUE,TRUE,Kernel Clocks
+199680,ZEP159,11.1.4,The kernel shall support 32bit hardware clocks,,,TRUE,,32bit hardware clocks,TRUE,TRUE,Kernel Clocks
+199326,ZEP160,11.2,The kernel should minimize timer handling overhead ,,,TRUE,,Timer Handling overhead minimization,FALSE,TRUE,Kernel Clocks
+200048,ZEP161,11.2.1,"The kernel shall support a ""tickless"" mode where timekeeping does not require the regular delivery of timer interrupts and interrupts reflect only registered events.",,,TRUE,,Tickless mode,TRUE,TRUE,Kernel Clocks
+199111,ZEP162,12,Logging,,,TRUE,,,FALSE,TRUE,Logging
+199372,ZEP163,12.1,The logging system shall support multi-processor systems,,,TRUE,,Multi-Processor Logging Support,FALSE,TRUE,Logging
+199898,ZEP164,12.1.1,"The logging system shall support each core with its unique core ID, which may be a parameter of each log and trace message.",,,TRUE,,Unique core ID in logging system,TRUE,TRUE,Logging
+199368,ZEP165,12.2,The operating system shall support deferred logging,,,TRUE,,Deferred Logging Support,FALSE,TRUE,Logging
+199880,ZEP166,12.2.1,"The logging system shall switch to blocking, synchronous processing in panic mode",,,TRUE,,Logging system to switch blocking synchronous processing,TRUE,TRUE,Logging
+199881,ZEP167,12.2.2,"The logging system shall support handling of transient strings, copying data when an asynchronous backend is in use",,,TRUE,,Logging system to support handling of transient strings,TRUE,TRUE,Logging
+199882,ZEP168,12.2.3,Logging shall support synchronous processing of logging messages.,,,TRUE,,Synchronous processing of logging messages,TRUE,TRUE,Logging
+199883,ZEP169,12.2.4,"The logging system shall provide early logging possibility. The API shall be able to handle log message attempts as well as creating new log contexts instances, before the backends are active",,,TRUE,,Early logging,TRUE,TRUE,Logging
+199371,ZEP170,12.3,"The logging system shall support customizable log messages, formatting and post-processing",,,TRUE,,Customizable   Logging,FALSE,TRUE,Logging
+199892,ZEP171,12.3.1,The logging system shall enable applications to provide information about its severity.,,,TRUE,,Enabling applications to provide information to logging system,TRUE,TRUE,Logging
+199889,ZEP172,12.3.2,The logging system shall support user customizable timestamping in log messages,,,TRUE,,Customizable timestamping in log messages,TRUE,TRUE,Logging
+199891,ZEP173,12.3.3,The logging system shall support dumping data using a dedicated API,,,TRUE,,Dedicated API for dumping data in logging system,TRUE,TRUE,Logging
+199894,ZEP174,12.3.4,The logging system shall allow to select the destination of the provided logging information.,,,TRUE,,Selectable destination for logging information,TRUE,TRUE,Logging
+199896,ZEP175,12.3.5,Logging buffer sizes and stack size for the logging thread shall be configurable,,,TRUE,,Logging buffer and stack size,TRUE,TRUE,Logging
+199893,ZEP176,12.3.6,The logging system shall support logically group logging information by domain,,,TRUE,,Grouping logging information by domain,TRUE,TRUE,Logging
+199890,ZEP177,12.3.7,The logging system shall enable Applications to provide additional information such as the domain being logged,,,TRUE,,Enabling applications to provide domain inforamtion,TRUE,TRUE,Logging
+199897,ZEP178,12.3.8,"Log levels shall be for example error, info, debug or warning.",,,TRUE,,Log Levels,TRUE,TRUE,Logging
+199895,ZEP179,12.3.9,The logging system shall provide the possibility for applications to check the current active severity level.,,,TRUE,,Severity level check for applications by logging system,TRUE,TRUE,Logging
+199369,ZEP180,12.4,The logging system shall support multiple logging backends,,,TRUE,,Multiple Backend Logging Support,FALSE,TRUE,Logging
+199885,ZEP181,12.4.1,The logging subsystem shall support output to the system console ,,,TRUE,,Support output to system console for logging subsystem,TRUE,TRUE,Logging
+199884,ZEP182,12.4.2,The logging subsystem shall support a UART backend,,,TRUE,,Logging subsystem UART backend support,TRUE,TRUE,Logging
+199373,ZEP183,12.5,The operating system shall support a dedicated thread for logging,,,TRUE,,Dedicated Logging Thread Support,FALSE,TRUE,Logging
+199899,ZEP184,12.5.1,The logging system shall be able to process all logging activities using a dedicated thread,,,TRUE,,Dedicated thread for processing logging activities,TRUE,TRUE,Logging
+199370,ZEP185,12.6,The logging system shall support filtering,,,TRUE,,Logging Filtering Support,FALSE,TRUE,Logging
+199887,ZEP186,12.6.1,Logging shall support dropping old messages to save memory,,,TRUE,,Dropping old messages in logging,TRUE,TRUE,Logging
+199888,ZEP187,12.6.2,The logging system shall support run-time filtering on a per module instance level,,,TRUE,,Run-time filtering support in the logging system,TRUE,TRUE,Logging
+199886,ZEP188,12.6.3,The logging system shall support compile-time filtering on a per module basis,,,TRUE,,Logging compile-time filtering support,TRUE,TRUE,Logging
+199094,ZEP189,13,Mailbox,,,TRUE,,,FALSE,TRUE,Mailbox
+199327,ZEP190,13.1,The kernel shall support a mailbox abstraction to enable targeted message passing between threads.,,,TRUE,,Mailbox Abstraction,FALSE,TRUE,Mailbox
+199685,ZEP191,13.1.1,The kernel shall provide a kernel object that provides enhanced message queue capabilities that go beyond the capabilities of a message queue object. ,,,TRUE,,Enhanced message queue ,TRUE,TRUE,Mailbox
+199688,ZEP192,13.2.2,The kernel shall allow mailbox messages to be exchanged synchronously or asynchronously.,,,TRUE,,Exchanging mailbox messages synchronously or asynchronously,TRUE,TRUE,Mailbox
+199690,ZEP193,13.2.3,"The kernel shall allow the sending thread to specify the address of the thread to which the message is sent, or send it to any thread",,,TRUE,,Specifying thread address for sending messages,TRUE,TRUE,Mailbox
+199684,ZEP194,13.2.4,An application shall be able to define any number of mailboxes.,,,TRUE,,Application definition mailboxes,TRUE,TRUE,Mailbox
+199689,ZEP195,13.2.5,Messages exchanged shall be tagged with the identity of the sending thread. ,,,TRUE,,Tagging identity of exchanged messages,TRUE,TRUE,Mailbox
+199686,ZEP196,13.2.6,A mailbox allows threads to send and receive messages of any size synchronously or asynchronously.,,,TRUE,,Sending and receiving synchronous or asynchronous messages,TRUE,TRUE,Mailbox
+199687,ZEP197,13.2.7,The kernel shall provide a mechanism for defining and initializing mailboxes at compile time,,,TRUE,,Defining and initializing mailboxes at compile time,TRUE,TRUE,Mailbox
+199107,ZEP198,14,Memory Protection,,,TRUE,,,FALSE,TRUE,Memory Protection
+199352,ZEP199,14.1,System calls must be able to safely accept c strings passed in from user mode,,,TRUE,,Safe C Strings in User Mode,FALSE,TRUE,Memory Protection
+199823,ZEP200,14.1.1,"A system call handler must be able to safely inspect an untrusted C string passed in from a user thread and determine its length, up to a specified limit.",,,TRUE,,Inspecting an untrusted C string from user thread,TRUE,TRUE,Memory Protection
+199822,ZEP201,14.1.2,The OS shall support passing limited size null terminated c strings to a system call handler. ,,,TRUE,,Passing limited size null terminated C strings,TRUE,TRUE,Memory Protection
+199356,ZEP202,14.2,The system shall provide system calls to allow user mode threads to perform priviledged operations ,,,TRUE,,Performing Privileged Operations in User Mode,FALSE,TRUE,Memory Protection
+199831,ZEP203,14.2.1,The kernel shall safety handle invocations of unimplemented system calls or invalid system call IDs.,,,TRUE,,Handling invocations of unimplemented system calls,TRUE,TRUE,Memory Protection
+199833,ZEP204,14.2.2,"Upon exit of a system call back to the calling thread, the kernel shall scrub CPU registers of any sensitive data.",,,TRUE,,Scrub CPU registers for sensitive data,TRUE,TRUE,Memory Protection
+199832,ZEP205,14.2.3,"The kernel shall handle system calls on a separate, private stack which is not accessible to the calling thread.",,,TRUE,,Handling system calls on a separate private stack,TRUE,TRUE,Memory Protection
+199354,ZEP206,14.3,The system shall support a boot time memory access policy,,,TRUE,,Boot Time Memory Access Policy,FALSE,TRUE,Memory Protection
+199829,ZEP207,14.3.1,The system shall allow for the definitions of boot-time memory regions whose permission attributes apply to all threads.,,,TRUE,,Definition of boot-time memory regions,TRUE,TRUE,Memory Protection
+199349,ZEP208,14.4,Zephyr shall support assigning a memory pool to act as that thread's resource pool. This pool will be used to draw dynamic memory on behalf of kernel APIs that require it for private data.,,,TRUE,,Assigning Memory Pools to Thread Resource Pool,FALSE,TRUE,Memory Protection
+199791,ZEP209,14.4.1,Zephyr shall support assigning the common system heap as its memory pool.,,,TRUE,,Common system heap,TRUE,TRUE,Memory Protection
+199794,ZEP210,14.4.2,The kernel shall support freeing memory drawn from a thread's resource pool. ,,,TRUE,,Freeing memory drawn,TRUE,TRUE,Memory Protection
+199793,ZEP211,14.4.3,The kernel shall provide a thread resource pool for system call handlers or kernel APIs. ,,,TRUE,,Thread resource pools,TRUE,TRUE,Memory Protection
+199792,ZEP212,14.4.4,A child thread shall inherit the resource pool assignment of their parent.,,,TRUE,,Child thread inheritance,TRUE,TRUE,Memory Protection
+199355,ZEP213,14.5,The system shall support detection of stack overflows,,,TRUE,,Stack Overflow Detection,FALSE,TRUE,Memory Protection
+199830,ZEP214,14.5.1,The system shall provide an optional mechanism to detect when supervisor mode threads overflow their stack memory buffer. No guarantees about the integrity of kernel  memory when this occurs can be made.,,,TRUE,,Mechanism for detecting supervisor thread overflow,TRUE,TRUE,Memory Protection
+199350,ZEP215,14.6,Zephyr shall have facilities for granting threads access to specific memory,,,TRUE,,Thread Access to Specific Memory,FALSE,TRUE,Memory Protection
+199800,ZEP216,14.6.1,Access to memory domain APIs must be restricted to supervisor threads only.,,,TRUE,,Memory Domain API access,TRUE,TRUE,Memory Protection
+199805,ZEP217,14.6.2,"The system shall automatically determine application memory partition base addresses and sizes at build time, determined by their contents.",,,TRUE,,Determining application memory partition,TRUE,TRUE,Memory Protection
+199809,ZEP218,14.6.3,The system shall ensure application memory partitions are automatically sized and aligned per the constraints of the platform's memory management hardware.,,,TRUE,,Application memory partition size and aliagnment,TRUE,TRUE,Memory Protection
+199806,ZEP219,14.6.4,"The system shall support applications assigning global data and BSS variables to application memory partitions using annotation macros, distinguishing between data that is assigned at build time or simply zeroed.",,,TRUE,,Assigning global data and BSS variable to application memory partitions,TRUE,TRUE,Memory Protection
+199802,ZEP220,14.6.5,The OS shall support removing a thread from its memory domain assignment.,,,TRUE,,Removing threads from memory domain,TRUE,TRUE,Memory Protection
+199801,ZEP221,14.6.6,"The OS shall support adding a thread as a member to a single memory domain. When the thread is active, the thread shall have specified access to the partition definitions within the domain.",,,TRUE,,Adding thread as a member to a single memory domain,TRUE,TRUE,Memory Protection
+199795,ZEP222,14.6.7,"The system shall support the definition of memory partitions. A memory partition consists of a starting address, a size, and a set of access attributes.",,,TRUE,,Definition of memory partitions,TRUE,TRUE,Memory Protection
+199798,ZEP223,14.6.8,"When adding a partition to a memory domain, the system should assert that the starting address, size, and access attributes are compatible with the underlying memory management hardware",,,TRUE,,Adding a partition to a memory domain,TRUE,TRUE,Memory Protection
+199803,ZEP224,14.6.9,"A memory domain may be destroyed, which removes all thread assignments to it.",,,TRUE,,Memory domain destruction,TRUE,TRUE,Memory Protection
+199799,ZEP225,14.6.10,"When adding a partition to a memory domain, the system should assert that the underlying memory management hardware has free resources (such as MPU regions) to accommodate the added partition",,,TRUE,,Adding a partition to a memory domain,TRUE,TRUE,Memory Protection
+199810,ZEP226,14.6.11,"The kernel shall support subsystem libraries which contain their own global data and place their globals in a named application memory partition which is exposed in a header file, so that threads using the library can add the partition to their memory domain.",,,TRUE,,Subsystem library support,TRUE,TRUE,Memory Protection
+199807,ZEP227,14.6.12,"The system shall provide means to obtain the names of the data and BSS sections related to a particular application memory partition at build time, for APIs which take a destination section as an argument.",,,TRUE,,Obtaining names of data and BSS sections,TRUE,TRUE,Memory Protection
+199796,ZEP228,14.6.13,"The system shall support the definition of memory domains. A memory domain is a set of memory partitions, up to some limit configured at build time.",,,TRUE,,Memory Domain Definition,TRUE,TRUE,Memory Protection
+199804,ZEP229,14.6.14,Child threads shall inherit the memory domain assignment of their parent.,,,TRUE,,Child thread memory domain inheritance,TRUE,TRUE,Memory Protection
+199808,ZEP230,14.6.15,The kernel shall support adding application memory partitions to memory domains like any other memory partition.,,,TRUE,,Adding application memory partitions to memory domains,TRUE,TRUE,Memory Protection
+199797,ZEP231,14.6.16,"When adding a partition to a memory domain, the system should assert that it does not overlap with any other partitions in the domain.",,,TRUE,,Adding a partition to a memory domain,TRUE,TRUE,Memory Protection
+199351,ZEP232,14.7,The system shall track kernel objects that are used by user mode threads,,,TRUE,,Track Kernel Objects by User Mode Threads,FALSE,TRUE,Memory Protection
+199818,ZEP233,14.7.1,"The OS shall support child thread inheritance of object permissions of the parent thread at creation time, except the parent thread object itself.",,,TRUE,,Child inheritance of object permissions,TRUE,TRUE,Memory Protection
+199817,ZEP234,14.7.2,"A thread may be granted permission on a kernel object. If the caller is a user thread, the caller must already have permission on the thread object being granted access, and the target object.",,,TRUE,,Thread permissions on a kernel object,TRUE,TRUE,Memory Protection
+199821,ZEP235,14.7.3,"The OS shall support supervisor threads granting kernel objects public status, allowing all threads to have access to them. ",,,TRUE,,Supervisor thread support,TRUE,TRUE,Memory Protection
+199812,ZEP236,14.7.4,"A subset of kernel object types may be dynamically allocated by threads, drawing memory from the calling thread's resource pool. If access to the object is tracked by the permission system, the requestor thread will implicitly be assigned permission on the allocated object.",,,TRUE,,Object types may be dynamically allocated by threads,TRUE,TRUE,Memory Protection
+199814,ZEP237,14.7.5,"Dynamically allocated kernel objects whose access is controlled by the permission system will use object permission as a reference count. If no threads have access to an object, that object may have any associated cleanup operations implicitly performed, and the object's memory released back to its originiating resource pool.",,,TRUE,,Using object permission as a reference count,TRUE,TRUE,Memory Protection
+199820,ZEP238,14.7.6,The OS shall support freeing Kernel objects allocated at runtime manually by supervisor threads.,,,TRUE,,Freeing kernel objects at runtime,TRUE,TRUE,Memory Protection
+199815,ZEP239,14.7.7,Kernel objects which contain private kernel data within their associated data structures must be located within private kernel memory and system call access to these objects must be tracked with the kernel object permission system.,,,TRUE,,Private kernel data,TRUE,TRUE,Memory Protection
+199811,ZEP240,14.7.8,"For all kernel objects which are accessible via system calls, the system must be able to associate kernel object memory addresses with whether the calling thread has access to the object, that the object is of the expected type, and the object is of the expected initialization state.",,,TRUE,,Associate kernel object memory addresses ,TRUE,TRUE,Memory Protection
+199813,ZEP241,14.7.9,"Kernel objects may be statically allocated at build time, without requiring any manual registration by the end user.",,,TRUE,,Statically allocating kernel objects at build time,TRUE,TRUE,Memory Protection
+199819,ZEP242,14.7.10,The OS shall support revoking permission on a kernel object. User threads may only revoke their own access to an object.,,,TRUE,,Revoking permissions on a kernel object,TRUE,TRUE,Memory Protection
+199816,ZEP243,14.7.11,The OS shall support locating kernel objects which do not contain private kernel data (such as futexes) anywhere in memory and control access with the memory domain configuration.,,,TRUE,,Locating kernel objects without private kernel data,TRUE,TRUE,Memory Protection
+199353,ZEP244,14.8,System calls define handler functions which validate all the inputs passed in from user mode before invoking the implementation function,,,TRUE,,Defining Handler Functions,FALSE,TRUE,Memory Protection
+199825,ZEP245,14.8.1,The kernel shall provide means for a system call handler to determine whether the caller has appropriate access permissions on an untrusted pointer/size passed in.,,,TRUE,,Appropriate access permissions for a system call,TRUE,TRUE,Memory Protection
+199827,ZEP246,14.8.2,"The kernel will fail system calls on kernel objects that track thread permissions, on threads that do not have permission granted on the object.",,,TRUE,,Failed system calls on kernel objects,TRUE,TRUE,Memory Protection
+199828,ZEP247,14.8.3,"When a system call handler elects to kill the calling thread, the kernel shall produce exception information which indicates the context where the faulting system call was made from user code.",,,TRUE,,Killing the calling thread by a system call handler,TRUE,TRUE,Memory Protection
+199826,ZEP248,14.8.4,System call handler checks which do not return an error code to the caller must generate a fatal error instead if the check fails.,,,TRUE,,Generating fatal error,TRUE,TRUE,Memory Protection
+199824,ZEP249,14.8.5,System call handlers for device driver subsystem APIs must check that the driver implements the particular API being called.,,,TRUE,,Checking drivers implements called API,TRUE,TRUE,Memory Protection
+199357,ZEP250,14.9,The system shall allow the creation of threads that run in reduced privilege level ,,,TRUE,,Reduced Privilege Thread Creation,FALSE,TRUE,Memory Protection
+199837,ZEP251,14.9.1,The kernel shall prevent user threads creating new threads from using thread or thread stack objects which are in an initialized (in-use) state.,,,TRUE,,User threads creating new threads,TRUE,TRUE,Memory Protection
+199842,ZEP252,14.9.2,The kernel shall prevent user threads from creating supervisor threads.,,,TRUE,,Preventing user threads from creating supervisor threads,TRUE,TRUE,Memory Protection
+199838,ZEP253,14.9.3,"Upon thread exit, the kernel shall mark the exiting thread and thread stack objects as un-initialized.",,,TRUE,,Unitilizaing exit thread and thread stack objects,TRUE,TRUE,Memory Protection
+199834,ZEP254,14.9.4,The kernel shall provide a means for a thread running in supervisor mode to perform a one-way operation to drop privileges to user mode. Any sensitive data on the stack must be scrubbed.,,,TRUE,,Supervisor mode privilege drop,TRUE,TRUE,Memory Protection
+199841,ZEP255,14.9.5,The kernel shall provide all threads read/write access to their own stack memory buffer.,,,TRUE,,Read/write access ,TRUE,TRUE,Memory Protection
+199840,ZEP256,14.9.6,The kernel shall prevent user threads from creating new threads that are higher priority than the caller.,,,TRUE,,User thread creating new threads,TRUE,TRUE,Memory Protection
+199835,ZEP257,14.9.7,The kernel shall provide new user threads access to their own thread object.,,,TRUE,,Access to thread objects,TRUE,TRUE,Memory Protection
+199836,ZEP258,14.9.8,The kernel shall ensure user threads creating new threads have permission on the target thread and thread stack objects. These objects shall be marked as initialized if the creation succeeds.,,,TRUE,,User threads creating new threads,TRUE,TRUE,Memory Protection
+199839,ZEP259,14.9.9,The kernel shall validate that new threads' stack sizes are not larger than the target thread stack object capacity.,,,TRUE,,Validating new threads' stack sizes,TRUE,TRUE,Memory Protection
+199095,ZEP260,15,Message Queue,,,TRUE,,,FALSE,TRUE,Message Queue
+199328,ZEP261,15.1,"The kernel shall provide a kernel object that implements a simple message queue, allowing threads and ISRs to asynchronously send and receive fixed-size data items.",,,TRUE,,Message Queue Kernel Object,FALSE,TRUE,Message Queue
+199693,ZEP262,15.1.1,The kernel shall provide a mechanism for defining and initializing message queues at compile time,,,TRUE,,Defining and initializing message queues at compile time,TRUE,TRUE,Message Queue
+199696,ZEP263,15.1.2,The kernel shall block a thread when it reads from an empty message queue ,,,TRUE,,Blocking a thread from an empty message queue,TRUE,TRUE,Message Queue
+199692,ZEP264,15.1.3,A data item can be received from a message queue by a thread.,,,TRUE,,Receiving data items,TRUE,TRUE,Message Queue
+199694,ZEP265,15.1.4,The kernel shall support sending a data item to a message queue by a thread or an ISR.,,,TRUE,,Sending data item to a message queue,TRUE,TRUE,Message Queue
+199691,ZEP266,15.1.5,An application shall be able to define any number of message queues,,,TRUE,,Application definition of message queues,TRUE,TRUE,Message Queue
+199697,ZEP267,15.1.6,All blocking operations shall support providing a timeout defining the maximum time the thread will wait,,,TRUE,,Blocking operations,TRUE,TRUE,Message Queue
+199695,ZEP268,15.1.7,The kernel shall support blocking a thread when it writes to a full message queue ,,,TRUE,,Blocking a thread from a full message queue,TRUE,TRUE,Message Queue
+199105,ZEP269,16,Multiple CPU scheduling,,,TRUE,,,FALSE,TRUE,SMP
+199346,ZEP270,16.1,The kernel shall provide a CPU mask mechanism for associating threads with specific CPUs,,,TRUE,,CPU Mask Mechanism,FALSE,TRUE,SMP
+199779,ZEP271,16.1.1,Threads shall not be scheduled on CPUs outside their mask set.,,,TRUE,,Thread scheduling on CPUs,TRUE,TRUE,SMP
+199778,ZEP272,16.1.2,The kernel shall provide a CPU mask mechanism to associate threads with a specific set of CPUs on which they will run.,,,TRUE,,CPU mask maechanism,TRUE,TRUE,SMP
+199347,ZEP273,16.2,The kernel shall support operation on more than one physical CPU sharing the same kernel state,,,TRUE,,Operation on multiple CPU on same kernel state,FALSE,TRUE,SMP
+199782,ZEP274,16.2.1,"The kernel shall support a compatible, global, recursive IRQ lock abstraction for the benefit of code written to uniprocessor synchronization.",,,TRUE,,"Compatible, global, recursive IRQ lock abstraction",TRUE,TRUE,SMP
+199781,ZEP275,16.2.2,The kernel shall support an identical scheduling and priority API in SMP and uniprocessor modes,,,TRUE,,Identical scheduling and priority API,TRUE,TRUE,SMP
+199780,ZEP276,16.2.3,Threads on a SMP kernel shall be able to execute symmetrically on any CPU in the system,,,TRUE,,Symmetric execution on any CPU,TRUE,TRUE,SMP
+199345,ZEP277,16.3,The kernel shall provide a mechanism for mutual exclusion between multiple physical CPUs using a traditional spinlock primitive.,,,TRUE,,Traditional Spinlock Primitives,FALSE,TRUE,SMP
+199776,ZEP278,16.3.1,Spinlocks in uniprocessor context should achieve mutual exclusion using interrupt masking,,,TRUE,,Mutual exclusion for spinlocks in uniprocessor contexts,TRUE,TRUE,SMP
+199777,ZEP279,16.3.2,Spinlocks may be locked to provide mutual exclusion between multiple CPUs using atomic APIs,,,TRUE,,Locking spinlocks to provide mutual exclusion,TRUE,TRUE,SMP
+199775,ZEP280,16.3.3,"The kernel shall support an arbitrary number of spinlocks, identified by their address, and initialized at either compile or run-time.",,,TRUE,,Spinlock support,TRUE,TRUE,SMP
+200047,ZEP281,17,Mutex,,,TRUE,,,FALSE,TRUE,Mutex
+199329,ZEP282,17.1,The kernel shall support a kernel object that implements a traditional reentrant mutex. A mutex shall allow multiple threads to safely share an associated hardware or software resource by ensuring mutually exclusive access to the resource.,,,TRUE,,Mutex Kernel Object,FALSE,TRUE,Mutex
+199698,ZEP283,17.1.1,"The kernel shall support recursive mutexes.  A lock of a mutex already locked will succeed, and waiters will be unblocked only when the number of locks reaches zero.",,,TRUE,,Recursive mutexes,TRUE,TRUE,Mutex
+199701,ZEP284,17.1.2,The thread that has locked a mutex shall be eligible for priority inheritance. This means the kernel will temporarily elevate the thread's priority if a higher priority thread begins waiting on the mutex.,,,TRUE,,Mutex priority inheritance,TRUE,TRUE,Mutex
+199702,ZEP285,17.1.3,A mutex can be defined and initialized at compile time or run time,,,TRUE,,Defining and initializing mutexes ,TRUE,TRUE,Mutex
+199700,ZEP286,17.1.4,The mutex lock operation shall accept a timeout parameter indicating the maximum amount of time the thread will wait,,,TRUE,,Mutex lock operations,TRUE,TRUE,Mutex
+199699,ZEP287,17.1.5,An application shall be able to define any number of mutexes,,,TRUE,,Application definition of mutexes,TRUE,TRUE,Mutex
+199096,ZEP288,18,Pipes,,,TRUE,,,FALSE,TRUE,Pipes
+199330,ZEP289,18.1,The kernel shall provide a kernel object that allows a thread to send a byte stream to another thread. Pipes can be used to transfer sequences of bytes of data in whole or in part.,,,TRUE,,Pipe Kernel Object,FALSE,TRUE,Pipes
+199707,ZEP290,18.1.1,The kernel shall support supplying a timeout parameter indicating the maximum amount of time a process will wait,,,TRUE,,Timeout parameter,TRUE,TRUE,Pipes
+199706,ZEP291,18.1.12,The kernel shall provide a mechanism for defining and initializing pipes at run time,,,TRUE,,Defining and initializing pipes at run time,TRUE,TRUE,Pipes
+199703,ZEP292,18.1.13,An application shall be able to define any number of pipes,,,TRUE,,Application definition of pipes,TRUE,TRUE,Pipes
+199705,ZEP293,18.1.14,The kernel shall provide a mechanism for defining and initializing pipes at compile time,,,TRUE,,Defining and initializing pipes at compile time,TRUE,TRUE,Pipes
+199704,ZEP294,18.1.15,The kernel shall support sending a kernel memory block into a pipe,,,TRUE,,Sending kernel memory blocks into a pipe,TRUE,TRUE,Pipes
+199097,ZEP295,19,Poll,,,TRUE,,,FALSE,TRUE,Poll
+199331,ZEP296,19.1,The kernel shall support a poll operation which enables waiting concurrently for any one of multiple conditions to be fulfilled.This allows a single thread to wait concurrently for one or more conditions to be fulfilled without actively looking at each one individually.,,,TRUE,,Poll Operation Support,FALSE,TRUE,Poll
+199709,ZEP297,19.1.1,The kernel shall support queue data available events as waitable events in poll ,,,TRUE,,Queue data available events waitable events in poll,TRUE,TRUE,Poll
+199708,ZEP298,19.1.2,The kernel shall support semaphore put events as waitable events in poll,,,TRUE,,Semaphore put events as waitable events,TRUE,TRUE,Poll
+199711,ZEP299,19.1.3,The kernel shall support a single timeout argument indicating the maximum amount of time a thread shall wait in poll,,,TRUE,,Timeout argument,TRUE,TRUE,Poll
+199710,ZEP300,19.1.4,The kernel shall support application-defined signals as waitable events in poll,,,TRUE,,Application-defined signals as waitable events,TRUE,TRUE,Poll
+199114,ZEP301,20,Power Management,,,TRUE,,,FALSE,TRUE,Power Management
+199389,ZEP302,20.1,The system shall provide control over and notification of changes to system power state,,,TRUE,,Power State Control,FALSE,TRUE,Power Management
+199915,ZEP303,20.1.1,The system shall support notification of device drivers on changes to system power state ,,,TRUE,,Notification of device drivers to system power state changes,TRUE,TRUE,Power Management
+199914,ZEP304,20.1.2,The system shall provide a timeout parameter to the idle routine indicating the amount of time guaranteed to expire before the next timeout,,,TRUE,,Timeout Parameter to the idle routine,TRUE,TRUE,Power Management
+199917,ZEP305,20.1.3,The system shall provide a mechanism to the application to suppress system power state transitions ,,,TRUE,,Mechanism to suppress system power state transitions,TRUE,TRUE,Power Management
+199912,ZEP306,20.1.4,The system shall provide  notification of changes to system power state,,,TRUE,,Notification of changes to system power state,TRUE,TRUE,Power Management
+199913,ZEP307,20.1.5,The system shall provide a global idle routine executed when no other work is available ,,,TRUE,,Global idle routine,TRUE,TRUE,Power Management
+199916,ZEP308,20.1.6,The system shall support control of power state ordering between subsystems and devices,,,TRUE,,Control of power state ordering,TRUE,TRUE,Power Management
+199098,ZEP309,21,Queues,,,TRUE,,,FALSE,TRUE,Queues
+199332,ZEP310,21.1,The kernel shall support a queue mechanism allowing threads to pass data elements in order ,,,TRUE,,Queue Mechanism for passing data elements,FALSE,TRUE,Queues
+199714,ZEP311,21.1.1,An application shall be able to define any number of queues,,,TRUE,,Queue definition,TRUE,TRUE,Queues
+199715,ZEP312,21.1.2,"The kernel shall provide a kernel object that implements a traditional Last In, First Out, or First In First Out queue, allowing threads and ISRs to add and remove data items of any size.",,,TRUE,,Kernel object for LIFO or FIFO,TRUE,TRUE,Queues
+199712,ZEP313,21.1.3,The kernel shall provide a mechanism for defining and initializing queues at compile time,,,TRUE,,Defining and initializing queues at compile time,TRUE,TRUE,Queues
+199713,ZEP314,21.1.4,"Kernel queues may have an unlimited number of items added to them without requiring allocation of kernel memory, the queue data structures shall be stored within the provided data items",,,TRUE,,Kernel queues items,TRUE,TRUE,Queues
+199099,ZEP315,22,Scheduling,,,TRUE,,,FALSE,TRUE,Scheduling
+199335,ZEP316,22.1,The kernel shall support preemption of a running thread by a higher priority thread,,,TRUE,,Preemption for Running Higher Priority Thread,FALSE,TRUE,Scheduling
+199722,ZEP317,22.1.1,"The scheduler shall select the highest priority ready thread to be the current thread. By default, when multiple ready threads of the same priority exist, the scheduler shall choose the one that has been waiting longest.",,,TRUE,,Selecting the highest priority ready thread,TRUE,TRUE,Scheduling
+199724,ZEP318,22.1.2,"A preemptable thread may be supplanted at any time if a cooperative thread, or a preemptable thread of higher or equal priority becomes ready.",,,TRUE,,Supplanting a preemptable thread,TRUE,TRUE,Scheduling
+199723,ZEP319,22.1.3,A preemptive thread that does not wish to be preempted shall be able to lock the scheduler to temporarily treat it as cooperative thread.,,,TRUE,,Temporary treatment of a preemptive thread to a cooperative thread.,TRUE,TRUE,Scheduling
+199337,ZEP320,22.2,The kernel shall organize running threads into a fixed list of numeric priorities,,,TRUE,,Organizing running threads,FALSE,TRUE,Scheduling
+199731,ZEP321,22.2.1,"The kernel shall support deadline scheduling, where threads with the same static priority are sorted according to the nearness of their ""deadline"" times.",,,TRUE,,Deadline scheduling ,TRUE,TRUE,Scheduling
+199729,ZEP322,22.2.2,The kernel shall support an arbitrary number of thread priority levels.,,,TRUE,,Thread priority level support,TRUE,TRUE,Scheduling
+199730,ZEP323,22.2.3,Thread priority shall be able to be expressed in integer values,,,TRUE,,Integer thread priority values,TRUE,TRUE,Scheduling
+199732,ZEP324,22.2.4,The kernel shall provide an idle thread at the lowest possible priority for power management tasks when nothing else is available to run,,,TRUE,,Power management idle thread,TRUE,TRUE,Scheduling
+199334,ZEP325,22.3,The kernel shall support thread priorities which cannot be preempted by other user threads  ,,,TRUE,,Thread priority support for un-preemptible threads,FALSE,TRUE,Scheduling
+199719,ZEP326,22.3.1,A cooperative thread shall be able to voluntarily yield the CPU to permit other threads or equal or higher priority to execute.,,,TRUE,,Voluntarily yielding the CPU,TRUE,TRUE,Scheduling
+199720,ZEP327,22.3.2,Time slice size shall be able to be changed while application is running.,,,TRUE,,Changing time slice size,TRUE,TRUE,Scheduling
+199721,ZEP328,22.3.3,"The kernel shall support cooperative threading, a cooperative thread remains the current thread until it performs an action that makes it unready.",,,TRUE,,Cooperative Threading,TRUE,TRUE,Scheduling
+199336,ZEP329,22.4,The kernel shall support runtime control of scheduler state,,,TRUE,,Runtime control of scheduler state,FALSE,TRUE,Scheduling
+199727,ZEP330,22.4.1,A thread shall be able to delay its processing and sleep for at least a specififed time period during which other ready threads can execute.,,,TRUE,,Delay thread processing and sleep,TRUE,TRUE,Scheduling
+199726,ZEP331,22.4.2,A thread shall be able to busy wait without yielding the CPU to another ready thread.,,,TRUE,,Busy Wait,TRUE,TRUE,Scheduling
+199728,ZEP332,22.4.3,Thread priority shall be able to be altered up or down after the thread has been started.,,,TRUE,,Thread priority alteration,TRUE,TRUE,Scheduling
+199725,ZEP333,22.4.4,The scheduler shall be able to wake up a sleeping thread from another thread.,,,TRUE,,Waking a sleeping thread from another thread,TRUE,TRUE,Scheduling
+199333,ZEP334,22.5,The kernel shall support traditional time sharing of CPU resources among threads of the same priority,,,TRUE,,Traditional Time sharing of CPU resources,FALSE,TRUE,Scheduling
+199716,ZEP335,22.5.1,Time slice size shall be configurable on a global basis,,,TRUE,,Time slice configuration,TRUE,TRUE,Scheduling
+199718,ZEP336,22.5.2,A thread that has exhausted its time slice shall not run until other threads of the same priority have exhausted theirs ,,,TRUE,,Exhausting a time slice,TRUE,TRUE,Scheduling
+199717,ZEP337,22.5.3,The scheduler shall support time-slicing with preemptable threads.,,,TRUE,,Time-slicing with preemptable threads,TRUE,TRUE,Scheduling
+199115,ZEP338,23,Sensor Subsystem,,,TRUE,,,FALSE,TRUE,Sensor Subsystem
+199391,ZEP339,23.1,The sensor interface shall support triggers.,,,TRUE,,Sensor interface Trigger Support,FALSE,TRUE,Sensor Subsystem
+199923,ZEP340,23.1.1,"The system shall support different types of triggers, based on time, data availability, threshold, based on a delta value, near/far events and single/double tap.  ",,,TRUE,,Sensor subsystem trigger type support,TRUE,TRUE,Sensor Subsystem
+199922,ZEP341,23.1.2,"The system shall allow configuration of runtime parameters in a sensor, for example threshold values for interrupts.",,,TRUE,,Sensor runtime parameter configuration,TRUE,TRUE,Sensor Subsystem
+199390,ZEP342,23.2,The sensor interface shall support multiple channels,,,TRUE,,Sensor Interface Channel Support,FALSE,TRUE,Sensor Subsystem
+199918,ZEP343,23.2.1,"A sensor shall support multiple channels, either to represent different axes of the same physical property or because they can measure different properties altogether",,,TRUE,,Multiple channel sensor support,TRUE,TRUE,Sensor Subsystem
+199919,ZEP344,23.2.2,Sensors shall return results in a representation that avoids use of floating point values,,,TRUE,,Avoiding floating point values in sensor results,TRUE,TRUE,Sensor Subsystem
+199921,ZEP345,23.2.3,"The system shall allow configuration of bus and address at compile time, and if the sensor supports interrupts, the interrupt lines and triggering parameters should also be configured at compile time.",,,TRUE,,Bus and address configuration at compile time,TRUE,TRUE,Sensor Subsystem
+199920,ZEP346,23.2.4,"The system shall allow sensors to be able to read value from its channels consistently. This must be done in two operations, first an instruction telling the driver to fetch a sample of all its channels and then get the values of each channel individually. ",,,TRUE,,Sensor reading values from channels,TRUE,TRUE,Sensor Subsystem
+199101,ZEP347,24,Thread Communication Devices,,,TRUE,,,FALSE,TRUE,Stack
+199339,ZEP348,24.1,"The kernel shall provide a kernel object that implements a traditional last in, first out (LIFO) queue, allowing threads and ISRs to add and remove a limited number of 32-bit data values.",,,TRUE,,LIFO queue,FALSE,TRUE,Stack
+199744,ZEP349,24.1.1,The k stack push operation shall wait if the stack is full ,,,TRUE,,K stack push operation,TRUE,TRUE,Stack
+199743,ZEP350,24.1.2,The k stack pop operation shall wait if no item is available,,,TRUE,,K stack pop operation,TRUE,TRUE,Stack
+199742,ZEP351,24.1.3,The kernel shall provide a mechanism for defining and initializing stacks at compile time,,,TRUE,,Defining and initializing stacks at compile time,TRUE,TRUE,Stack
+199746,ZEP352,24.1.4,Push and pop operations shall accept a timeout parameter indicating the maximum amount of time the thread will wait,,,TRUE,,Push and pop operations accepting timeout parameters,TRUE,TRUE,Stack
+199745,ZEP353,24.1.5,The kernel shall support defining a k stack with a fixed maximum number of entries,,,TRUE,,Defining a k stack,TRUE,TRUE,Stack
+199100,ZEP354,25,Thread Communication Mechanisms,,,TRUE,,,FALSE,TRUE,Semaphores
+199338,ZEP355,25.1,The kernel shall provide a traditional counting semaphore abstraction for queuing and mutual exclusion ,,,TRUE,,Semaphore Abstraction,FALSE,TRUE,Semaphores
+199737,ZEP356,25.1.1,"A semaphore may be taken by a thread. Taking the semaphore shall decrement its count, unless the semaphore count is zero ",,,TRUE,,Semaphores may be taken by a thread,TRUE,TRUE,Semaphores
+199733,ZEP357,25.1.2,An application shall be able to define any number of semaphores,,,TRUE,,Defining number of semaphores,TRUE,TRUE,Semaphores
+199734,ZEP358,25.1.3,Any number of threads may wait on a semaphore simultaneously.,,,TRUE,,Thread waiting on a semaphore,TRUE,TRUE,Semaphores
+199738,ZEP359,25.1.4,"When the semaphore is given, it is taken by the highest priority thread that has waited longest.",,,TRUE,,Semaphore thread priority,TRUE,TRUE,Semaphores
+199739,ZEP360,25.1.5,"When a semaphore count is zero, a thread will wait for it to be incremented by another thread",,,TRUE,,Zero count semaphore,TRUE,TRUE,Semaphores
+199736,ZEP361,25.1.6,A semaphore can be defined and initialized at compile time with an application-specified count,,,TRUE,,Defining and initializing semaphore at compile time,TRUE,TRUE,Semaphores
+199741,ZEP362,25.1.7,The kernel shall accept a timeout argument with a take operation that specifies the maximum amount of time the thread will wait,,,TRUE,,Accepting timeout arguments,TRUE,TRUE,Semaphores
+199740,ZEP363,25.1.8,A semaphore may be given by a thread or an ISR.,,,TRUE,,Semaphore given by thread or ISR,TRUE,TRUE,Semaphores
+199735,ZEP364,25.1.9,A semaphore shall have the following properties: a count that indicated the number of times the semaphore can be taken and a limit that indicates the max. value the semaphore count can reach.,,,TRUE,,Semaphore properties,TRUE,TRUE,Semaphores
+199102,ZEP365,26,Thread Support,,,TRUE,,,FALSE,TRUE,Threads
+199341,ZEP366,26.1,The kernel shall provide facilities for managing threads ,,,TRUE,,Thread Management Facilities,FALSE,TRUE,Threads
+199756,ZEP367,26.1.1,The kernel shall supply a mechanism for statically initializing thread stacks in memory,,,TRUE,,Statically initializing thread stacks,TRUE,TRUE,Threads
+199754,ZEP368,26.1.2,Each thread shall have a thread ID used to reference the thread in question,,,TRUE,,Thread ID,TRUE,TRUE,Threads
+199755,ZEP369,26.1.3,The kernel shall supply a mechanism for associating human-readable names with threads,,,TRUE,,Human-readable name thread association ,TRUE,TRUE,Threads
+199758,ZEP370,26.1.4,A thread may synchronously end its execution by returning from its entry point function.,,,TRUE,,Thread synchronous end,TRUE,TRUE,Threads
+199752,ZEP371,26.1.5,The kernel shall support providing custom data per thread. The data will be thread specific and can be used by an application for any purpose.,,,TRUE,,Custom data per thread,TRUE,TRUE,Threads
+199751,ZEP372,26.1.6,The kernel shall be able to configure a thread at compile time,,,TRUE,,Configuring a thread at compile time,TRUE,TRUE,Threads
+199757,ZEP373,26.1.7,A thread shall be defined with options to either start execution immediately or with a delay by specifying a timeout value,,,TRUE,,Thread definition options,TRUE,TRUE,Threads
+199753,ZEP374,26.1.8,The kernel shall allow delayed start to be cancelled before the thread starts execution,,,TRUE,,Cancelling delayed start before thread execution,TRUE,TRUE,Threads
+199340,ZEP375,26.2,The kernel shall support synchronously or asynchronously aborting a thread,,,TRUE,,Thread Abortion,FALSE,TRUE,Threads
+199747,ZEP376,26.2.1,The kernel shall raise a fatal system error if the idle thread aborts,,,TRUE,,Raising fatal errors,TRUE,TRUE,Threads
+199750,ZEP377,26.2.2,A thread can be aborted by another thread.,,,TRUE,,Thread abortion,TRUE,TRUE,Threads
+199748,ZEP378,26.2.3,A thread may asynchronously end its execution by aborting.,,,TRUE,,Asynchronous thread end,TRUE,TRUE,Threads
+199749,ZEP379,26.2.4,An application shall be able to define any number of threads,,,TRUE,,Application thread definition,TRUE,TRUE,Threads
+199342,ZEP380,26.3,When enabled the kernel shall maintain floating point context for threads. ,,,TRUE,,Thread Floating Point Context,FALSE,TRUE,Threads
+199759,ZEP381,26.3.1,The kernel shall preserve floating point context on thread context switch,,,TRUE,,Floating point context on thread context switch,TRUE,TRUE,Threads
+199761,ZEP382,26.3.2,The kernel should not incur floating point register save overhead for threads not using floating point,,,TRUE,,Floating point register thread poilicy ,TRUE,TRUE,Threads
+199760,ZEP383,26.3.3,The kernel shall prevent accidental access from one thread to the floating point registers of another,,,TRUE,,Preventing accidental access between threads,TRUE,TRUE,Threads
+199103,ZEP384,27,Timers,,,TRUE,,,FALSE,TRUE,Timers
+199343,ZEP385,27.1,The kernel shall provide a timer abstraction that associates a c function with timeout events,,,TRUE,,Timer Abstractions,FALSE,TRUE,Timers
+199764,ZEP386,27.1.1,"A running timer can be stopped in mid-countdown, if desired.",,,TRUE,,Stopping a running timer,TRUE,TRUE,Timers
+199766,ZEP387,27.1.2,A timer's status can be read directly at any time to determine how many times the timer has expired since its status was last read.,,,TRUE,,Timer status direct read,TRUE,TRUE,Timers
+199765,ZEP388,27.1.3,A timer is started by specifying a duration until the function is invoked for the first time and a period between subsequent invocations.,,,TRUE,,Starting a timer,TRUE,TRUE,Timers
+199768,ZEP389,27.1.4,A timer can be defined and initialized at compile time,,,TRUE,,Defining and initializing a timer at compile time,TRUE,TRUE,Timers
+199767,ZEP390,27.1.5,"A thread may synchronize with the timer, waiting until the callback is next invoked.  ",,,TRUE,,Synchronizing threads to timers,TRUE,TRUE,Timers
+199763,ZEP391,27.1.6,"A running timer can be restarted in mid-countdown, if desired.",,,TRUE,,Restarting a running timer,TRUE,TRUE,Timers
+199762,ZEP392,27.1.7,An application shall be able to define any number of timers,,,TRUE,,Application definition of timers,TRUE,TRUE,Timers
+199113,ZEP393,28,Tracing,,,TRUE,,,FALSE,TRUE,Debug and Tracing
+199388,ZEP394,28.1,The tracing system shall provide a mean to identify the objects being traced,,,TRUE,,Tracing Object  Identification,FALSE,TRUE,Debug and Tracing
+199911,ZEP395,28.1.1,"The consumer of the tracing data shall be able to identify and show the current phase of operation (thread, ISR, idle thread, etc.) based on the provided trace data.",,,TRUE,,Tracing data identification and phase operation,TRUE,TRUE,Debug and Tracing
+199386,ZEP396,28.2,The tracing system shall support multiple backends,,,TRUE,,Multiple Backend Tracing Support,FALSE,TRUE,Debug and Tracing
+199909,ZEP397,28.2.1,The tracing system shall support dumping the trace data in text format using existing logging and debug facilities available in the system,,,TRUE,,Dumping trace data in text format,TRUE,TRUE,Debug and Tracing
+199908,ZEP398,28.2.2,The tracing system shall support the common tracing format (CTF),,,TRUE,,Common tracing format support,TRUE,TRUE,Debug and Tracing
+199387,ZEP399,28.3,The tracing functionality shall not interfere with normal operations of the operating system.,,,TRUE,,Tracing Non-Interference,FALSE,TRUE,Debug and Tracing
+199910,ZEP400,28.3.1,All tracing calls shall not be producing code when the tracing system is disabled.,,,TRUE,,Tracing calls not producing code when disabled,TRUE,TRUE,Debug and Tracing
