@@ -1,0 +1,4 @@
+tests:
+  kernel.semaphore.take_by_high_prio_thread:
+    min_ram: 32
+    tags: kernel userspace

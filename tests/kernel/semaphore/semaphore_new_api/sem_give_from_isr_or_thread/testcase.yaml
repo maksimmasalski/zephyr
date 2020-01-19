@@ -1,0 +1,4 @@
+tests:
+  kernel.semaphore.give_from_isr_or_thread:
+    min_ram: 32
+    tags: kernel userspace

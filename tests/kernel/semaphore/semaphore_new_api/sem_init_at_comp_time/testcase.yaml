@@ -1,0 +1,4 @@
+tests:
+  kernel.semaphore.init_at_comp_time:
+    min_ram: 32
+    tags: kernel userspace
