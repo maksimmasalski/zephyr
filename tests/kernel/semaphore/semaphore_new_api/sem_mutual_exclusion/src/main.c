@@ -11,9 +11,12 @@
 #define SEM_MAX_COUNT  (1U)
 #define PRIORITY -1
 #define STACKSIZE (512 + CONFIG_TEST_EXTRA_STACKSIZE)
+#define COUNTER_MAX_VAL 1
 
 /* Kobject declaration */
 K_SEM_DEFINE(simple_sem, SEM_INIT_COUNT, SEM_MAX_COUNT);
+
+static u32_t counter = 0;
 
 /**
  * @brief Kernel provide a counting semaphore for queuing and mutual exclusion
@@ -23,7 +26,6 @@ K_SEM_DEFINE(simple_sem, SEM_INIT_COUNT, SEM_MAX_COUNT);
 void test_sem_queue_mutual_exclusion(void)
 {
 	printk("Init code part started\n");
-	static u32_t counter = 0;
 	static u32_t sem_count;
 	static u32_t thread_prio;
 	k_tid_t thread_id;
@@ -38,9 +40,12 @@ void test_sem_queue_mutual_exclusion(void)
 	sem_count = k_sem_count_get(&simple_sem);
 	printk("Semaphore count in the critical section is %d\n", sem_count);
 	counter ++;
-	printk("Counter expected be 1, really is %d\n", counter);
+	printk("Counter expected be %d, really is %d\n", COUNTER_MAX_VAL, counter);
+	zassert_true((counter == COUNTER_MAX_VAL),
+			"Two threads entered into critical section at the same time, "
+			"counter value should be %d, got %d",
+			 COUNTER_MAX_VAL, counter);
 	/* make current thread sleep to let second thread take semaphore */
-	k_sleep(1);
 	printk("Left critical section\n\n");
 	counter = 0;
 	k_sem_give(&simple_sem);
