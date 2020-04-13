@@ -709,10 +709,15 @@ static void domain_add_thread_drop_to_user(void)
 	k_thread_user_mode_enter(user_half, NULL, NULL, NULL);
 }
 
-/* Show that adding a partition to a domain and then dropping to user mode
- * works as expected.
+/* @brief Test that adding a partition to a domain
+ * and then dropping to user mode works as expected.
  *
  * @ingroup kernel_memprotect_tests
+ *
+ * The kernel shall support adding application memory partitions
+ * to memory domains like any other memory partition.
+ *
+ * @verify{@req{230}}
  */
 static void domain_add_part_drop_to_user(void)
 {
