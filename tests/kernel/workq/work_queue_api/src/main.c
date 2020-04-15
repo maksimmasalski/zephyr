@@ -115,8 +115,8 @@ static void twork_resubmit(void *data)
 	 */
 	k_queue_remove(&(new_work.work_q->queue), &(new_work.work));
 
-	zassert_equal(k_delayed_work_submit_to_queue(work_q, &new_work, K_NO_WAIT),
-		      -EINVAL, NULL);
+	zassert_equal(k_delayed_work_submit_to_queue(work_q, &new_work,
+				K_NO_WAIT), -EINVAL, NULL);
 
 	k_sem_give(&sync_sema);
 }
@@ -152,7 +152,7 @@ static void tdelayed_work_submit_1(struct k_work_q *work_q,
 
 	/**TESTPOINT: check remaining timeout after submit */
 	zassert_true(time_remaining <= k_ticks_to_ms_floor64(timeout_ticks +
-							     _TICK_ALIGN), NULL);
+				_TICK_ALIGN), NULL);
 
 	timeout_ticks -= z_ms_to_ticks(15);
 
@@ -183,7 +183,8 @@ static void tdelayed_work_cancel(void *data)
 
 	if (work_q) {
 		ret = k_delayed_work_submit_to_queue(work_q,
-						     &delayed_work_sleepy, TIMEOUT);
+						     &delayed_work_sleepy,
+						     TIMEOUT);
 		ret |= k_delayed_work_submit_to_queue(work_q, &delayed_work[0],
 						      TIMEOUT);
 		ret |= k_delayed_work_submit_to_queue(work_q, &delayed_work[1],
@@ -223,7 +224,8 @@ static void tdelayed_work_cancel(void *data)
 		k_sleep(TIMEOUT);
 		/**TESTPOINT: check pending when work completed*/
 		zassert_false(k_work_pending(
-				      (struct k_work *)&delayed_work_sleepy), NULL);
+					(struct k_work *)&delayed_work_sleepy),
+						NULL);
 		/**TESTPOINT: delayed work cancel when completed*/
 		ret = k_delayed_work_cancel(&delayed_work_sleepy);
 		zassert_equal(ret, 0, NULL);
@@ -246,13 +248,14 @@ static void ttriggered_work_submit(void *data)
 		k_work_poll_init(&triggered_work[i], work_handler);
 		/**TESTPOINT: check pending after triggered work init*/
 		zassert_false(k_work_pending(
-				      (struct k_work *)&triggered_work[i]), NULL);
+					(struct k_work *)&triggered_work[i]),
+						NULL);
 		if (work_q) {
 			/**TESTPOINT: triggered work submit to queue*/
 			zassert_true(k_work_poll_submit_to_queue(work_q,
-								 &triggered_work[i],
-								 &triggered_work_event[i], 1,
-								 K_FOREVER) == 0, NULL);
+					&triggered_work[i],
+					&triggered_work_event[i], 1,
+					K_FOREVER) == 0, NULL);
 		} else {
 			/**TESTPOINT: triggered work submit to system queue*/
 			zassert_true(k_work_poll_submit(
@@ -263,7 +266,8 @@ static void ttriggered_work_submit(void *data)
 
 		/**TESTPOINT: check pending after triggered work submit*/
 		zassert_true(k_work_pending(
-				     (struct k_work *)&triggered_work[i]) == 0, NULL);
+				(struct k_work *)&triggered_work[i]) == 0,
+					NULL);
 	}
 
 	for (int i = 0; i < NUM_OF_WORK; i++) {
@@ -272,7 +276,8 @@ static void ttriggered_work_submit(void *data)
 			     == 0, NULL);
 		/**TESTPOINT: check pending after sending signal */
 		zassert_true(k_work_pending(
-				     (struct k_work *)&triggered_work[i]) != 0, NULL);
+				     (struct k_work *)&triggered_work[i]) != 0,
+					NULL);
 	}
 }
 
@@ -301,21 +306,27 @@ static void ttriggered_work_cancel(void *data)
 
 	if (work_q) {
 		ret = k_work_poll_submit_to_queue(work_q,
-						  &triggered_work_sleepy, &triggered_work_sleepy_event, 1,
-						  K_FOREVER);
+						  &triggered_work_sleepy,
+						  &triggered_work_sleepy_event,
+						  1, K_FOREVER);
 		ret |= k_work_poll_submit_to_queue(work_q,
-						   &triggered_work[0], &triggered_work_event[0], 1,
+						   &triggered_work[0],
+						   &triggered_work_event[0], 1,
 						   K_FOREVER);
 		ret |= k_work_poll_submit_to_queue(work_q,
-						   &triggered_work[1], &triggered_work_event[1], 1,
+						   &triggered_work[1],
+						   &triggered_work_event[1], 1,
 						   K_FOREVER);
 	} else {
 		ret = k_work_poll_submit(&triggered_work_sleepy,
-					 &triggered_work_sleepy_event, 1, K_FOREVER);
+					 &triggered_work_sleepy_event, 1,
+					 K_FOREVER);
 		ret |= k_work_poll_submit(&triggered_work[0],
-					  &triggered_work_event[0], 1, K_FOREVER);
+					  &triggered_work_event[0], 1,
+					  K_FOREVER);
 		ret |= k_work_poll_submit(&triggered_work[1],
-					  &triggered_work_event[1], 1, K_FOREVER);
+					  &triggered_work_event[1], 1,
+					  K_FOREVER);
 	}
 	/* Check if all submission succeeded */
 	zassert_true(ret == 0, NULL);
@@ -885,12 +896,12 @@ void test_main(void)
 	k_thread_system_pool_assign(k_current_get());
 
 	ztest_test_suite(workqueue_api,
-	                 /* Do not disturb the ordering of these test cases */
+			/* Do not disturb the ordering of these test cases */
 			 ztest_unit_test(test_workq_start_before_submit),
 			 ztest_user_unit_test(test_user_workq_start_before_submit),
 			 ztest_unit_test(test_user_workq_granted_access_setup),
 			 ztest_user_unit_test(test_user_workq_granted_access),
-	                 /* End order-important tests */
+			/* End order-important tests */
 			 ztest_1cpu_unit_test(test_work_submit_to_multipleq),
 			 ztest_unit_test(test_work_resubmit_to_queue),
 			 ztest_1cpu_unit_test(test_work_submit_to_queue_thread),
