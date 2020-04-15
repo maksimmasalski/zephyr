@@ -38,7 +38,7 @@ K_THREAD_STACK_DEFINE(new_stack_area[MAX_WORK_Q_NUMBER], STACK_SIZE);
 /* Common function using like a handler for workqueue tests */
 void new_common_work_handler(struct k_work *unused)
 {
-    k_sem_give(&sync_sema);
+	k_sem_give(&sync_sema);
 }
 
 /*
