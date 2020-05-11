@@ -388,7 +388,7 @@ static struct k_sem ksem;
  *
  * @ingroup kernel_memprotect_tests
  */
-static void pass_noperms_object(void)
+static void test_pass_noperms_object(void)
 {
 	/* Try to pass a object to a system call w/o permissions. */
 	expect_fault = true;
@@ -1234,7 +1234,7 @@ void test_main(void)
 			 ztest_user_unit_test(read_priv_stack),
 			 ztest_user_unit_test(write_priv_stack),
 			 ztest_user_unit_test(pass_user_object),
-			 ztest_user_unit_test(pass_noperms_object),
+			 ztest_user_unit_test(test_pass_noperms_object),
 			 ztest_user_unit_test(start_kernel_thread),
 			 ztest_1cpu_user_unit_test(read_other_stack),
 			 ztest_1cpu_user_unit_test(write_other_stack),
