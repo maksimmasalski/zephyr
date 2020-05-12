@@ -67,6 +67,9 @@ static void syscall_invalid_kobject_user_part(void *p1, void *p2, void *p3)
 /**
  * @brief Test if a syscall can take a different type of kobject
  *
+ * @details Test that syscall can take a different typy of kobject
+ * and syscall will generate fatal error if check fails
+ *
  * @ingroup kernel_memprotect_tests
  *
  * @see k_thread_access_grant()
@@ -94,6 +97,9 @@ static void thread_without_kobject_permission_user_part(void *p1, void *p2,
 
 /**
  * @brief Test if a user thread can access a k_object without grant
+ *
+ * @details The kernel will fail system call on kernel object that tracks
+ * thread permissions, that don't have permission granted on the object.
  *
  * @ingroup kernel_memprotect_tests
  *
@@ -411,7 +417,7 @@ void test_kobject_access_invalid_kobject(void *p1, void *p2, void *p3)
 
 /****************************************************************************/
 /**
- * @brief object validation checks without init accss
+ * @brief Object validation checks without init access
  *
  * @details Test syscall on a kobject which is not initialized
  * and has no access
