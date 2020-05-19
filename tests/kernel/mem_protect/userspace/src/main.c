@@ -51,6 +51,10 @@ FOR_EACH(K_APPMEM_PARTITION_DEFINE, part0, part1);
 struct k_mem_domain dom0;
 struct k_mem_domain dom1;
 
+struct k_sem check_sem;
+struct k_mutex check_mutex;
+static char bad_sem[sizeof(struct k_sem)];
+
 K_APP_DMEM(part0) static volatile bool give_uthread_end_sem;
 K_APP_DMEM(part0) bool mem_access_check;
 
@@ -1207,6 +1211,19 @@ void test_syscall_context(void)
 	check_syscall_context();
 }
 
+static void drop_to_usermode_kernel_thread_check(void)
+{
+	k_sem_take((struct k_sem *)&bad_sem, K_FOREVER);
+}
+
+static void test_syscall_kernel_object_check(void)
+{
+	//k_sem_give(&check_sem);
+	k_thread_access_grant(k_current_get(), &check_sem, (struct k_sem *)&bad_sem);
+	k_thread_user_mode_enter((k_thread_entry_t)drop_to_usermode_kernel_thread_check,
+			 NULL, NULL, NULL);
+}
+
 void test_main(void)
 {
 	struct k_mem_partition *parts[] = {&part0, &part1,
@@ -1270,7 +1287,8 @@ void test_main(void)
 			 ztest_user_unit_test(test_oops_maxint),
 			 ztest_user_unit_test(test_oops_stackcheck),
 			 ztest_unit_test(test_object_recycle),
-			 ztest_user_unit_test(test_syscall_context)
+			 ztest_user_unit_test(test_syscall_context),
+			 ztest_unit_test(test_syscall_kernel_object_check)
 			 );
 	ztest_run_test_suite(userspace);
 }
