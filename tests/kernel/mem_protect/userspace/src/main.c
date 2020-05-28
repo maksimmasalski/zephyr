@@ -555,11 +555,14 @@ static void umode_enter_func(void)
 }
 
 /**
- * @brief Test to check enter to usermode
+ * @brief Test to check supervisor thread enter one-way to usermode
+ *
+ * @details A thread running in supervisor mode must have one-way operation
+ * ability to drop privileges to user mode.
  *
  * @ingroup kernel_memprotect_tests
  */
-static void user_mode_enter(void)
+static void test_user_mode_enter(void)
 {
 	expect_fault = false;
 	BARRIER();
@@ -1240,7 +1243,7 @@ void test_main(void)
 			 ztest_1cpu_user_unit_test(write_other_stack),
 			 ztest_user_unit_test(revoke_noperms_object),
 			 ztest_user_unit_test(access_after_revoke),
-			 ztest_unit_test(user_mode_enter),
+			 ztest_unit_test(test_user_mode_enter),
 			 ztest_user_unit_test(write_kobject_user_pipe),
 			 ztest_user_unit_test(read_kobject_user_pipe),
 			 ztest_1cpu_unit_test(access_other_memdomain),

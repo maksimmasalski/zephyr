@@ -41,6 +41,7 @@ extern void test_access_kobject_without_init_access(void);
 extern void test_access_kobject_without_init_with_access(void);
 extern void test_kobject_reinitialize_thread_kobj(void);
 extern void test_create_new_thread_from_user(void);
+extern void test_new_user_thread_with_in_use_stack_obj(void);
 extern void test_create_new_thread_from_user_no_access_stack(void);
 extern void test_create_new_thread_from_user_invalid_stacksize(void);
 extern void test_create_new_thread_from_user_huge_stacksize(void);
@@ -48,6 +49,9 @@ extern void test_create_new_supervisor_thread_from_user(void);
 extern void test_create_new_essential_thread_from_user(void);
 extern void test_create_new_higher_prio_thread_from_user(void);
 extern void test_create_new_invalid_prio_thread_from_user(void);
+extern void test_stack_user_rw_access(void);
+extern void test_stack_superuser_rw_access(void);
+extern void test_mark_thread_exit_uninitialized(void);
 
 void test_main(void)
 {
@@ -82,6 +86,8 @@ void test_main(void)
 			 ztest_unit_test(test_kobject_reinitialize_thread_kobj),
 			 ztest_unit_test(test_create_new_thread_from_user),
 			 ztest_unit_test(
+				 test_new_user_thread_with_in_use_stack_obj),
+			 ztest_unit_test(
 				 test_create_new_thread_from_user_no_access_stack),
 			 ztest_unit_test(
 				 test_create_new_thread_from_user_invalid_stacksize),
@@ -90,7 +96,10 @@ void test_main(void)
 			 ztest_unit_test(test_create_new_supervisor_thread_from_user),
 			 ztest_unit_test(test_create_new_essential_thread_from_user),
 			 ztest_unit_test(test_create_new_higher_prio_thread_from_user),
-			 ztest_unit_test(test_create_new_invalid_prio_thread_from_user)
+			 ztest_unit_test(test_create_new_invalid_prio_thread_from_user),
+			 ztest_unit_test(test_stack_user_rw_access),
+			 ztest_unit_test(test_stack_superuser_rw_access),
+			 ztest_unit_test(test_mark_thread_exit_uninitialized)
 			 );
 	ztest_run_test_suite(memory_protection_test_suite);
 }
