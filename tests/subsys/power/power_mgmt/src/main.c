@@ -212,13 +212,6 @@ void test_teardown(void)
 void test_main(void)
 {
 	ztest_test_suite(power_management_test,
-			 ztest_1cpu_unit_test(test_power_idle),
-			 ztest_unit_test_setup_teardown(test_power_state_trans,
-							test_setup,
-							test_teardown),
-			 ztest_unit_test_setup_teardown(
-						test_power_state_notification,
-						test_setup,
-						test_teardown));
+			 ztest_user_unit_test(test_setup));
 	ztest_run_test_suite(power_management_test);
 }
